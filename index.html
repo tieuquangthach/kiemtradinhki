@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Gemini Mini Chat</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
+    #app { max-width: 800px; margin: 30px auto; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #333; }
+    #apikey, #prompt { width: 100%; padding: 10px; margin: 8px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
+    #send { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; }
+    #send:hover { background: #45a049; }
+    #response { margin-top: 20px; padding: 15px; background: #fafafa; border-radius: 8px; border: 1px solid #ddd; white-space: pre-wrap; }
+    label { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h2>💬 Gemini Mini Chat</h2>
+    <label for="apikey">API Key:</label>
+    <input id="apikey" type="password" placeholder="Ví dụ: AIzaSy....">
+    
+    <label for="prompt">Câu hỏi / yêu cầu:</label>
+    <textarea id="prompt" rows="4" placeholder="Nhập câu hỏi của thầy..."></textarea>
+    
+    <button id="send">Gửi</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    // Khi tải trang: điền API key đã lưu (nếu có)
+    window.onload = () => {
+      const savedKey = localStorage.getItem("gemini_api_key");
+      if (savedKey) document.getElementById("apikey").value = savedKey;
+    };
+
+    async function callGemini(apiKey, prompt) {
+      const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+      const body = { contents: [{ role: "user", parts: [{ text: prompt }]}] };
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error("Lỗi API: " + res.status);
+      return res.json();
+    }
+
+    document.getElementById("send").addEventListener("click", async () => {
+      const apiKey = document.getElementById("apikey").value.trim();
+      const prompt = document.getElementById("prompt").value.trim();
+      const responseDiv = document.getElementById("response");
+
+      if (!apiKey) {
+        alert("⚠️ Vui lòng nhập API Key");
+        return;
+      }
+      if (!prompt) {
+        alert("⚠️ Vui lòng nhập câu hỏi");
+        return;
+      }
+
+      // Lưu API key vào LocalStorage
+      localStorage.setItem("gemini_api_key", apiKey);
+
+      responseDiv.innerHTML = "⏳ Đang xử lý...";
+      try {
+        const data = await callGemini(apiKey, prompt);
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Không có phản hồi";
+        responseDiv.innerHTML = marked.parse(text);
+      } catch (err) {
+        responseDiv.innerHTML = "❌ Lỗi: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
