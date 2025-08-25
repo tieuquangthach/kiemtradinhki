@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tạo Đề Kiểm Tra Toán</title>
+<title>Tạo Đề Kiểm Tra</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
@@ -17,18 +17,22 @@
 <body class="p-6 flex justify-center items-start min-h-screen">
 
 <div class="bg-app p-6 rounded-2xl shadow-xl max-w-4xl w-full">
-  <div class="flex flex-col items-center mb-6">
-    <img src="logo.jpg" alt="Logo Trường THCS Hàm Minh" class="w-24 h-24 mb-4 rounded-full shadow-lg">
-    <h1 class="text-3xl font-semibold text-yellow-500 text-center">Trường THCS Hàm Minh</h1>
-    <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán - Tin</h2>
-    <p class="text-gray-500 text-center">Chương trình tạo đề kiểm tra định kì theo công văn 7791.</p>
+
+  <!-- Banner -->
+  <div class="bg-yellow-500 text-gray-900 p-6 rounded-xl mb-6 text-center shadow-lg">
+    <h1 class="text-3xl font-bold mb-2">Trường THCS Hàm Minh</h1>
+    <h2 class="text-2xl font-semibold mb-2">Tổ Toán - Tin</h2>
+    <p class="text-lg">Chương trình tạo đề kiểm tra định kì theo công văn 7791</p>
   </div>
 
   <!-- Form nhập -->
   <form id="examForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="md:col-span-2">
+    <div>
       <label class="block text-gray-700 mb-1">Môn học</label>
-      <input type="text" value="Toán" readonly class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"/>
+      <select id="subject" class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-900">
+        <option selected>Toán</option>
+        <option>Tin</option>
+      </select>
     </div>
 
     <div>
@@ -94,6 +98,7 @@ import { GEMINI_API_KEY, GEMINI_MODEL } from './config.js';
 const gradeSelect = document.getElementById('grade');
 const topicSelect = document.getElementById('topic');
 const notesInput = document.getElementById('notes');
+const subjectSelect = document.getElementById('subject');
 const statusContainer = document.getElementById('statusContainer');
 const loadingIndicator = document.getElementById('loadingIndicator');
 const examOutput = document.getElementById('examOutput');
@@ -131,11 +136,12 @@ function showError(msg){
 function buildPrompt(type){
   const grade = gradeSelect.value;
   const topic = topicSelect.value;
+  const subject = subjectSelect.value;
   const notes = notesInput.value.trim();
   const scopeNote = notes?`\nGiới hạn nội dung: ${notes}\n`:'';
-  if(type==='matrix') return `Tạo ma trận đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
-  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
-  return `Tạo đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
+  if(type==='matrix') return `Tạo ma trận đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  return `Tạo đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
 }
 
 async function callGeminiAPI(prompt){
@@ -172,7 +178,6 @@ async function handleGeneration(type){
   }
 }
 
-// Copy / Download
 async function copyToClipboard(text){
   try{await navigator.clipboard.writeText(text);}catch{
     const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
@@ -191,8 +196,8 @@ generateButton.addEventListener('click', e=>{ e.preventDefault(); handleGenerati
 copyMarkdownButton.addEventListener('click', ()=>copyToClipboard(markdownContent.value));
 copyLatexButton.addEventListener('click', ()=>copyToClipboard(latexContent.value));
 
-downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-toan-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
-downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-toan-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
+downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
+downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
 </script>
 
 </body>
