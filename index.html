@@ -1,473 +1,83 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tạo Đề Kiểm Tra Toán</title>
+<title>Tạo Đề Kiểm Tra</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@@ -17,18 +17,22 @@
+<body class="p-6 flex justify-center items-start min-h-screen">
 
-    <title>Tạo Đề Kiểm Tra Toán THCS</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Rất nhạt, gần như trắng */
-        }
-        .bg-white {
-            background-color: #ffffff;
-        }
-        .text-blue-950 {
-            color: #1e293b; /* Xanh đậm, gần như đen, dễ đọc */
-        }
-        .text-gray-800 {
-            color: #1e293b;
-        }
-        .text-gray-500 {
-            color: #64748b;
-        }
-        .text-gray-700 {
-            color: #334155;
-        }
-        .bg-gray-100 {
-            background-color: #f1f5f9;
-        }
-        .bg-gray-50 {
-            background-color: #f8fafc;
-        }
-        .bg-blue-700 {
-            background-color: #0f67b1; /* Xanh lam chuyên nghiệp */
-        }
-        .hover\:bg-blue-800:hover {
-            background-color: #0c558d;
-        }
-        .focus\:ring-blue-300:focus {
-            --tw-ring-color: #93c5fd;
-        }
-        .bg-gray-200 {
-            background-color: #e2e8f0;
-        }
-        .hover\:bg-gray-300:hover {
-            background-color: #cbd5e1;
-        }
-        .bg-green-100 {
-            background-color: #d1fae5;
-        }
-        .text-green-700 {
-            color: #047857;
-        }
-        .bg-red-100 {
-            background-color: #fee2e2;
-        }
-        .border-red-400 {
-            border-color: #f87171;
-        }
-        .text-red-700 {
-            color: #b91c1c;
-        }
-    </style>
-</head>
-<body class="p-4 sm:p-8 md:p-12 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl max-w-5xl w-full">
-        <h1 class="text-3xl sm:text-4xl font-semibold text-center mb-2 text-blue-950">Trường THCS Hàm Minh</h1>
-        <h2 class="text-2xl font-semibold text-center mb-2 text-blue-950">Tổ Toán - Tin</h2>
-        <p class="text-center text-gray-500 mb-8">Tạo đề kiểm tra môn Toán THCS theo cấu trúc và định dạng chuẩn.</p>
-        
-        <!-- Input Form -->
-        <form id="examForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Subject - Fixed -->
-            <div class="col-span-1 md:col-span-2">
-                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Môn học</label>
-                <input type="text" id="subject" value="Toán" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-gray-100 cursor-not-allowed">
-            </div>
+<div class="bg-app p-6 rounded-2xl shadow-xl max-w-4xl w-full">
+  <div class="flex flex-col items-center mb-6">
+    <img src="logo.jpg" alt="Logo Trường THCS Hàm Minh" class="w-24 h-24 mb-4 rounded-full shadow-lg">
+    <h1 class="text-3xl font-semibold text-yellow-500 text-center">Trường THCS Hàm Minh</h1>
+    <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán - Tin</h2>
+    <p class="text-gray-500 text-center">Chương trình tạo đề kiểm tra định kì theo công văn 7791.</p>
 
-            <!-- Grade -->
-            <div>
-                <label for="grade" class="block text-sm font-medium text-gray-700 mb-1">Khối</label>
-                <select id="grade" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                    <option value="6">Khối 6</option>
-                    <option value="7">Khối 7</option>
-                    <option value="8">Khối 8</option>
-                    <option value="9">Khối 9</option>
-                </select>
-            </div>
-            
-            <!-- Exam Period -->
-            <div>
-                <label for="topic" class="block text-sm font-medium text-gray-700 mb-1">Kì kiểm tra</label>
-                <select id="topic" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                    <option value="Giữa kì 1">Giữa kì 1</option>
-                    <option value="Cuối kì 1">Cuối kì 1</option>
-                    <option value="Giữa kì 2">Giữa kì 2</option>
-                    <option value="Cuối kì 2">Cuối kì 2</option>
-                </select>
-            </div>
+  <!-- Banner -->
+  <div class="bg-yellow-500 text-gray-900 p-6 rounded-xl mb-6 text-center shadow-lg">
+    <h1 class="text-3xl font-bold mb-2">Trường THCS Hàm Minh</h1>
+    <h2 class="text-2xl font-semibold mb-2">Tổ Toán - Tin</h2>
+    <p class="text-lg">Chương trình tạo đề kiểm tra định kì theo công văn 7791</p>
+  </div>
 
-            <!-- New: Difficulty Level -->
-            <div>
-                <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">Mức độ khó</label>
-                <select id="difficulty" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                    <option value="Dễ">Dễ</option>
-                    <option value="Trung bình" selected>Trung bình</option>
-                    <option value="Khó">Khó</option>
-                </select>
-            </div>
-            
-            <!-- Exam Structure Description -->
-            <div class="col-span-1 md:col-span-2 text-sm text-gray-600 border border-gray-200 rounded-lg p-4 bg-gray-50">
-                <p class="font-bold mb-2 text-gray-800">Cấu trúc đề thi (10 điểm):</p>
-                <ul class="list-disc list-inside space-y-1">
-                    <li><span class="font-semibold">Phần Trắc nghiệm (7 điểm):</span></li>
-                    <ul class="list-disc list-inside ml-4">
-                        <li>12 câu trắc nghiệm nhiều lựa chọn (mỗi câu 0,25 điểm)</li>
-                        <li>2 câu trắc nghiệm đúng/sai (mỗi câu 1,0 điểm)</li>
-                        <li>2 câu trắc nghiệm trả lời ngắn (mỗi câu 1,0 điểm)</li>
-                    </ul>
-                    <li><span class="font-semibold">Phần Tự luận (3 điểm):</span></li>
-                    <ul class="list-disc list-inside ml-4">
-                        <li>3 câu tự luận</li>
-                    </ul>
-                </ul>
-            </div>
-            
-            <!-- Generate Button -->
-            <div class="col-span-1 md:col-span-2 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-4">
-                <button type="button" id="createMatrixButton" class="w-full sm:w-auto px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out">
-                    Tạo ma trận đề
-                </button>
-                <button type="button" id="createTableButton" class="w-full sm:w-auto px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out">
-                    Tạo bảng đặc tả
-                </button>
-                <button type="submit" id="generateButton" class="w-full sm:w-auto px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out">
-                    Tạo Đề Kiểm Tra ✨
-                </button>
-                <!-- New: Generate Answer Key Button -->
-                <button type="button" id="generateAnswersButton" class="w-full sm:w-auto px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out">
-                    Tạo đáp án chi tiết ✨
-                </button>
-            </div>
-        </form>
-
-        <!-- Status and Output -->
-        <div id="statusContainer" class="mt-8 hidden">
-            <div id="loadingIndicator" class="flex justify-center items-center flex-col hidden">
-                <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-400 border-t-blue-500"></div>
-                <p class="mt-3 text-gray-500">Đang tạo nội dung...</p>
-            </div>
-            <div id="examOutput" class="hidden">
-                <!-- LaTeX Output -->
-                <div class="mb-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-2xl font-semibold text-gray-800">Nội dung (Định dạng LaTeX)</h2>
-                        <button id="copyLatexButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition duration-150 ease-in-out">
-                            Sao chép LaTeX
-                        </button>
-                    </div>
-                    <textarea id="latexContent" class="w-full h-96 p-4 border border-gray-300 rounded-lg shadow-inner resize-none text-gray-800 font-mono text-sm" readonly></textarea>
-                </div>
-                
-                <!-- Markdown Output -->
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-2xl font-semibold text-gray-800">Nội dung (Định dạng Markdown)</h2>
-                        <button id="copyMarkdownButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition duration-150 ease-in-out">
-                            Sao chép Markdown
-                        </button>
-                    </div>
-                    <div id="messageBox" class="bg-green-100 text-green-700 p-3 rounded-lg text-sm mb-4 hidden" role="alert"></div>
-                    <textarea id="markdownContent" class="w-full h-96 p-4 border border-gray-300 rounded-lg shadow-inner resize-none text-gray-800" readonly></textarea>
-                </div>
-            </div>
-
-            <!-- New: Answer Key Output -->
-            <div id="answerOutput" class="hidden mt-8">
-                <!-- Answer Key LaTeX -->
-                <div class="mb-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-2xl font-semibold text-gray-800">Đáp án (Định dạng LaTeX)</h2>
-                        <button id="copyAnswersLatexButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition duration-150 ease-in-out">
-                            Sao chép LaTeX
-                        </button>
-                    </div>
-                    <textarea id="answersLatexContent" class="w-full h-96 p-4 border border-gray-300 rounded-lg shadow-inner resize-none text-gray-800 font-mono text-sm" readonly></textarea>
-                </div>
-
-                <!-- Answer Key Markdown -->
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-2xl font-semibold text-gray-800">Đáp án (Định dạng Markdown)</h2>
-                        <button id="copyAnswersMarkdownButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition duration-150 ease-in-out">
-                            Sao chép Markdown
-                        </button>
-                    </div>
-                    <textarea id="answersMarkdownContent" class="w-full h-96 p-4 border border-gray-300 rounded-lg shadow-inner resize-none text-gray-800" readonly></textarea>
-                </div>
-            </div>
-            
-            <div id="errorContainer" class="bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg hidden" role="alert">
-                <p class="font-bold">Lỗi:</p>
-                <p id="errorMessage" class="text-sm mt-1"></p>
-            </div>
-        </div>
+  <!-- Form nhập -->
+  <form id="examForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="md:col-span-2">
+    <div>
+      <label class="block text-gray-700 mb-1">Môn học</label>
+      <input type="text" value="Toán" readonly class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"/>
+      <select id="subject" class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-900">
+        <option selected>Toán</option>
+        <option>Tin</option>
+      </select>
     </div>
 
-    <script>
-        // DOM Elements
-        const form = document.getElementById('examForm');
-        const gradeSelect = document.getElementById('grade');
-        const topicSelect = document.getElementById('topic');
-        const difficultySelect = document.getElementById('difficulty'); // New
-        const generateButton = document.getElementById('generateButton');
-        const createMatrixButton = document.getElementById('createMatrixButton');
-        const createTableButton = document.getElementById('createTableButton');
-        const generateAnswersButton = document.getElementById('generateAnswersButton'); // New
-        const statusContainer = document.getElementById('statusContainer');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const examOutput = document.getElementById('examOutput');
-        const latexContent = document.getElementById('latexContent');
-        const markdownContent = document.getElementById('markdownContent');
-        const copyLatexButton = document.getElementById('copyLatexButton');
-        const copyMarkdownButton = document.getElementById('copyMarkdownButton');
-        const messageBox = document.getElementById('messageBox');
-        const errorContainer = document.getElementById('errorContainer');
-        const errorMessage = document.getElementById('errorMessage');
-        const answerOutput = document.getElementById('answerOutput'); // New
-        const answersLatexContent = document.getElementById('answersLatexContent'); // New
-        const answersMarkdownContent = document.getElementById('answersMarkdownContent'); // New
-        const copyAnswersLatexButton = document.getElementById('copyAnswersLatexButton'); // New
-        const copyAnswersMarkdownButton = document.getElementById('copyAnswersMarkdownButton'); // New
+    <div>
+@@ -94,6 +98,7 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
+const gradeSelect = document.getElementById('grade');
+const topicSelect = document.getElementById('topic');
+const notesInput = document.getElementById('notes');
+const subjectSelect = document.getElementById('subject');
+const statusContainer = document.getElementById('statusContainer');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const examOutput = document.getElementById('examOutput');
+@@ -131,11 +136,12 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
+function buildPrompt(type){
+  const grade = gradeSelect.value;
+  const topic = topicSelect.value;
+  const subject = subjectSelect.value;
+  const notes = notesInput.value.trim();
+  const scopeNote = notes?`\nGiới hạn nội dung: ${notes}\n`:'';
+  if(type==='matrix') return `Tạo ma trận đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  return `Tạo đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
+  if(type==='matrix') return `Tạo ma trận đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  return `Tạo đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
+}
 
+async function callGeminiAPI(prompt){
+@@ -172,7 +178,6 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
+  }
+}
 
-        // State variables
-        let lastGeneratedText = '';
+// Copy / Download
+async function copyToClipboard(text){
+  try{await navigator.clipboard.writeText(text);}catch{
+    const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+@@ -191,8 +196,8 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
+copyMarkdownButton.addEventListener('click', ()=>copyToClipboard(markdownContent.value));
+copyLatexButton.addEventListener('click', ()=>copyToClipboard(latexContent.value));
 
-        // Function to hide all states
-        function hideAllStates() {
-            loadingIndicator.classList.add('hidden');
-            examOutput.classList.add('hidden');
-            answerOutput.classList.add('hidden'); // New
-            errorContainer.classList.add('hidden');
-            statusContainer.classList.add('hidden');
-        }
+downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-toan-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
+downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-toan-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
+downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
+downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
+</script>
 
-        // Function to show a temporary message
-        function showMessage(text) {
-            messageBox.textContent = text;
-            messageBox.classList.remove('hidden');
-            setTimeout(() => {
-                messageBox.classList.add('hidden');
-            }, 3000); // Hide after 3 seconds
-        }
-        
-        // Function to call Gemini API with exponential backoff
-        async function callGeminiAPI(prompt, retries = 0) {
-            const apiKey = ""; // API key will be provided by canvas
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{
-                    parts: [{ text: prompt }]
-                }],
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    if (response.status === 429 && retries < 5) {
-                        const delay = Math.pow(2, retries) * 1000 + Math.random() * 1000;
-                        await new Promise(res => setTimeout(res, delay));
-                        return callGeminiAPI(prompt, retries + 1);
-                    }
-                    throw new Error(`HTTP Error! Status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const content = result.candidates[0].content.parts[0].text;
-                if (!content) {
-                    throw new Error('Không nhận được nội dung từ API.');
-                }
-                return content;
-
-            } catch (error) {
-                if (retries < 5) {
-                    const delay = Math.pow(2, retries) * 1000 + Math.random() * 1000;
-                    await new Promise(res => setTimeout(res, delay));
-                    return callGeminiAPI(prompt, retries + 1);
-                }
-                throw new Error('Không thể kết nối đến API Gemini sau nhiều lần thử lại.');
-            }
-        }
-        
-        // Event listeners for the new buttons
-        createMatrixButton.addEventListener('click', async () => {
-            handleGeneration('matrix');
-        });
-
-        createTableButton.addEventListener('click', async () => {
-            handleGeneration('table');
-        });
-
-        // New event listener for generating answers
-        generateAnswersButton.addEventListener('click', async () => {
-            if (!lastGeneratedText) {
-                errorMessage.textContent = 'Vui lòng tạo một đề thi trước khi tạo đáp án.';
-                errorContainer.classList.remove('hidden');
-                statusContainer.classList.remove('hidden');
-                return;
-            }
-            await handleGeneration('answers');
-        });
-
-        // Event listener for form submission
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            handleGeneration('exam');
-        });
-
-        async function handleGeneration(type) {
-            hideAllStates();
-            statusContainer.classList.remove('hidden');
-            loadingIndicator.classList.remove('hidden');
-            
-            // Disable all buttons during generation
-            generateButton.disabled = true;
-            createMatrixButton.disabled = true;
-            createTableButton.disabled = true;
-            generateAnswersButton.disabled = true;
-
-            const grade = gradeSelect.value;
-            const topic = topicSelect.value;
-            const difficulty = difficultySelect.value; // New
-
-            let prompt = '';
-            if (type === 'matrix') {
-                prompt = `Tạo một ma trận đề kiểm tra môn Toán khối ${grade}, kì thi "${topic}", với mức độ khó "${difficulty}". Cấu trúc ma trận cần thể hiện rõ các mức độ nhận thức (Nhận biết, Thông hiểu, Vận dụng) và phân phối điểm cho từng phần (trắc nghiệm nhiều lựa chọn, đúng/sai, trả lời ngắn, tự luận) theo yêu cầu. Định dạng đầu ra chỉ là LaTeX và Markdown trong cùng một văn bản.
-                LaTeX: \`\`\`latex
-                Markdown: \`\`\`markdown`;
-            } else if (type === 'table') {
-                prompt = `Tạo một bảng đặc tả đề kiểm tra môn Toán khối ${grade}, kì thi "${topic}", với mức độ khó "${difficulty}". Bảng đặc tả cần chi tiết từng chủ đề, số câu hỏi, điểm số và mức độ nhận thức (Nhận biết, Thông hiểu, Vận dụng). Định dạng đầu ra chỉ là LaTeX và Markdown trong cùng một văn bản.
-                LaTeX: \`\`\`latex
-                Markdown: \`\`\`markdown`;
-            } else if (type === 'exam') {
-                prompt = `Bạn là một trợ lý chuyên nghiệp tạo đề kiểm tra toán THCS. Hãy tạo một đề kiểm tra hoàn chỉnh cho môn Toán THCS khối ${grade}, kì thi "${topic}", với mức độ khó "${difficulty}", và cấu trúc và định dạng sau.
-
-                Cấu trúc đề thi theo thang điểm 10:
-                - Phần Trắc nghiệm (7 điểm):
-                    - 12 câu trắc nghiệm nhiều lựa chọn (mỗi câu 0,25 điểm), mức độ Nhận biết – Thông hiểu.
-                    - 2 câu trắc nghiệm đúng/sai (mỗi câu 1,0 điểm), mức độ Nhận biết – Thông hiểu – Vận dụng.
-                    - 2 câu trắc nghiệm trả lời ngắn (mỗi câu 1,0 điểm), mức độ Thông hiểu.
-                - Phần Tự luận (3 điểm):
-                    - 3 câu tự luận, yêu cầu vận dụng kiến thức để giải thích, lập luận hoặc giải quyết tình huống thực tiễn.
-                
-                Yêu cầu định dạng đầu ra:
-                Đầu ra phải chứa cả hai định dạng LaTeX và Markdown trong cùng một văn bản.
-                Định dạng LaTeX phải được bao bọc bởi \`\`\`latex và Markdown phải được bao bọc bởi \`\`\`markdown.
-
-                Định dạng chung cho cả hai:
-                1. Phần tiêu đề gồm một bảng 2 cột.
-                2. Nội dung đề thi được đánh số liên tục.
-                3. Đáp án đúng được cung cấp ở cuối đề.
-                
-                Bắt đầu với Markdown. Nội dung bảng tiêu đề như sau:
-                | Họ và tên: ............... | Trường THCS Hàm Minh |
-                | Lớp: ......... | Kiểm tra ${topic} |
-                | | Thời gian: 90 phút |
-
-                Sau đó là nội dung đề thi, câu hỏi trắc nghiệm nhiều lựa chọn phải có 4 đáp án A, B, C, D.
-
-                Tiếp theo là LaTeX. Nội dung bảng tiêu đề:
-                \\begin{tabular}{l|l}
-                Họ và tên: ............... & Trường THCS Hàm Minh \\\\
-                Lớp: ......... & Kiểm tra ${topic} \\\\
-                & Thời gian: 90 phút \\\\
-                \\end{tabular}
-                
-                Và nội dung đề thi tương tự.`;
-            } else if (type === 'answers') { // New logic for generating answers
-                prompt = `Dựa trên đề kiểm tra sau, hãy tạo một đáp án chi tiết bao gồm lời giải từng bước cho tất cả các câu hỏi.
-                
-                Đề kiểm tra:
-                ${lastGeneratedText}
-
-                Yêu cầu định dạng đầu ra:
-                Đầu ra phải chứa cả hai định dạng LaTeX và Markdown trong cùng một văn bản.
-                Định dạng LaTeX phải được bao bọc bởi \`\`\`latex và Markdown phải được bao bọc bởi \`\`\`markdown.
-                `;
-            }
-            
-            try {
-                const result = await callGeminiAPI(prompt);
-                
-                // Update lastGeneratedText only if it was an exam generation
-                if (type === 'exam') {
-                    lastGeneratedText = result;
-                }
-
-                // Extract Markdown and LaTeX content
-                const markdownMatch = result.match(/```markdown\n([\s\S]*?)```/);
-                const latexMatch = result.match(/```latex\n([\s\S]*?)```/);
-
-                if (markdownMatch && latexMatch) {
-                    if (type === 'answers') {
-                        answersMarkdownContent.value = markdownMatch[1].trim();
-                        answersLatexContent.value = latexMatch[1].trim();
-                        answerOutput.classList.remove('hidden');
-                    } else {
-                        markdownContent.value = markdownMatch[1].trim();
-                        latexContent.value = latexMatch[1].trim();
-                        examOutput.classList.remove('hidden');
-                    }
-                } else {
-                    throw new Error('Không thể phân tích phản hồi từ Gemini.');
-                }
-                
-                loadingIndicator.classList.add('hidden');
-                
-            } catch (error) {
-                loadingIndicator.classList.add('hidden');
-                errorContainer.classList.remove('hidden');
-                errorMessage.textContent = 'Có lỗi xảy ra: ' + error.message;
-                console.error('Error:', error);
-            } finally {
-                generateButton.disabled = false;
-                createMatrixButton.disabled = false;
-                createTableButton.disabled = false;
-                generateAnswersButton.disabled = false; // New
-            }
-        }
-        
-        // Copy LaTeX content
-        copyLatexButton.addEventListener('click', () => {
-            latexContent.select();
-            document.execCommand('copy');
-            showMessage('Nội dung LaTeX đã được sao chép vào clipboard!');
-        });
-        
-        // Copy Markdown content
-        copyMarkdownButton.addEventListener('click', () => {
-            markdownContent.select();
-            document.execCommand('copy');
-            showMessage('Nội dung Markdown đã được sao chép vào clipboard!');
-        });
-
-        // New: Copy Answers LaTeX content
-        copyAnswersLatexButton.addEventListener('click', () => {
-            answersLatexContent.select();
-            document.execCommand('copy');
-            showMessage('Nội dung đáp án LaTeX đã được sao chép vào clipboard!');
-        });
-
-        // New: Copy Answers Markdown content
-        copyAnswersMarkdownButton.addEventListener('click', () => {
-            answersMarkdownContent.select();
-            document.execCommand('copy');
-            showMessage('Nội dung đáp án Markdown đã được sao chép vào clipboard!');
-        });
-    </script>
 </body>
-</html>
