@@ -1,62 +1,204 @@
-<!-- Banner nền xanh đậm, chữ vàng, glow chữ chính, marquee chạy chậm + glow -->
-<div class="bg-gradient-to-r from-blue-800 via-blue-900 to-indigo-900 p-6 rounded-2xl mb-6 text-center shadow-2xl transform hover:scale-105 transition duration-300 relative overflow-hidden">
-  
-  <!-- Tiêu đề chính glow -->
-  <h1 class="text-3xl sm:text-4xl font-bold mb-2 uppercase relative inline-block text-yellow-400 z-10" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">
-    TRƯỜNG THCS HÀM MINH
-    <span class="glow"></span>
-  </h1>
-  
-  <!-- Tổ Toán - Tin -->
-  <h2 class="text-2xl sm:text-3xl font-semibold mb-2 z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">Tổ Toán - Tin</h2>
-  
-  <!-- Marquee chạy chậm, glow nhẹ -->
-  <div class="text-lg sm:text-xl mb-1 z-10 relative overflow-hidden h-6">
-    <p class="marquee-glow" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-      Chương trình tạo đề kiểm tra định kì theo công văn 7791
-    </p>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tạo Đề Kiểm Tra</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+  body { font-family: 'Inter', sans-serif; background-color: #1f2937; color: #facc15; }
+  .text-yellow-500 { color: #facc15; }
+  .bg-app { background-color: #ffffff; }
+  .bg-muted { background-color: #f9fafb; }
+  .ring-blue { --tw-ring-color: #93c5fd; }
+</style>
+</head>
+<body class="p-6 flex justify-center items-start min-h-screen">
+
+<div class="bg-app p-6 rounded-2xl shadow-xl max-w-4xl w-full">
+
+  <!-- Banner -->
+  <div class="bg-yellow-500 text-gray-900 p-6 rounded-xl mb-6 text-center shadow-lg">
+    <h1 class="text-3xl font-bold mb-2">Trường THCS Hàm Minh</h1>
+    <h2 class="text-2xl font-semibold mb-2">Tổ Toán - Tin</h2>
+    <p class="text-lg">Chương trình tạo đề kiểm tra định kì theo công văn 7791</p>
   </div>
-  
-  <!-- Năm học -->
-  <p class="text-lg sm:text-xl font-medium z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Năm học 2025 - 2026</p>
+
+  <!-- Form nhập -->
+  <form id="examForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-gray-700 mb-1">Môn học</label>
+      <select id="subject" class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-900">
+        <option selected>Toán</option>
+        <option>Tin</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-gray-700 mb-1">Khối</label>
+      <select id="grade" class="w-full px-4 py-2 border rounded-lg">
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+        <option selected>9</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-gray-700 mb-1">Kì kiểm tra</label>
+      <select id="topic" class="w-full px-4 py-2 border rounded-lg">
+        <option>Giữa kì 1</option>
+        <option>Cuối kì 1</option>
+        <option>Giữa kì 2</option>
+        <option selected>Cuối kì 2</option>
+      </select>
+    </div>
+
+    <div class="md:col-span-2">
+      <label class="block text-gray-700 mb-1">Ghi chú (tùy chọn)</label>
+      <textarea id="notes" rows="2" placeholder="Ví dụ: Đại số – hệ hai phương trình bậc nhất..." class="w-full px-4 py-2 border rounded-lg text-gray-800"></textarea>
+    </div>
+
+    <div class="md:col-span-2 flex gap-2 mt-2">
+      <button type="button" id="createMatrixButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo ma trận đề</button>
+      <button type="button" id="createTableButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo bảng đặc tả</button>
+      <button type="submit" id="generateButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo Đề Kiểm Tra ✨</button>
+    </div>
+  </form>
+
+  <!-- Kết quả -->
+  <div id="statusContainer" class="mt-6 hidden">
+    <div id="loadingIndicator" class="flex justify-center items-center flex-col hidden">
+      <div class="animate-spin h-12 w-12 border-4 border-gray-400 border-t-blue-500 rounded-full"></div>
+      <p class="mt-2 text-gray-500">Đang tạo nội dung...</p>
+    </div>
+
+    <div id="examOutput" class="hidden mt-4">
+      <div class="flex gap-2 mb-2">
+        <button id="copyMarkdownButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Copy Markdown</button>
+        <button id="downloadMarkdownButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Download .md</button>
+      </div>
+      <textarea id="markdownContent" rows="10" class="w-full p-2 border rounded-lg mb-4" readonly></textarea>
+
+      <div class="flex gap-2 mb-2">
+        <button id="copyLatexButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Copy LaTeX</button>
+        <button id="downloadLatexButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Download .tex</button>
+      </div>
+      <textarea id="latexContent" rows="10" class="w-full p-2 border rounded-lg" readonly></textarea>
+    </div>
+
+    <div id="errorContainer" class="hidden text-red-700 bg-red-100 p-2 rounded-lg mt-2"></div>
+  </div>
 </div>
 
-<style>
-/* Glow animation cho chữ chính */
-.glow {
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 150%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-  transform: skewX(-20deg);
-  animation: glowMove 3s linear infinite;
-  pointer-events: none;
-  z-index: 0;
+<script type="module">
+import { GEMINI_API_KEY, GEMINI_MODEL } from './config.js';
+
+const gradeSelect = document.getElementById('grade');
+const topicSelect = document.getElementById('topic');
+const notesInput = document.getElementById('notes');
+const subjectSelect = document.getElementById('subject');
+const statusContainer = document.getElementById('statusContainer');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const examOutput = document.getElementById('examOutput');
+const markdownContent = document.getElementById('markdownContent');
+const latexContent = document.getElementById('latexContent');
+const errorContainer = document.getElementById('errorContainer');
+
+const generateButton = document.getElementById('generateButton');
+const createMatrixButton = document.getElementById('createMatrixButton');
+const createTableButton = document.getElementById('createTableButton');
+
+const copyMarkdownButton = document.getElementById('copyMarkdownButton');
+const copyLatexButton = document.getElementById('copyLatexButton');
+const downloadMarkdownButton = document.getElementById('downloadMarkdownButton');
+const downloadLatexButton = document.getElementById('downloadLatexButton');
+
+function hideStates(){
+  loadingIndicator.classList.add('hidden');
+  examOutput.classList.add('hidden');
+  errorContainer.classList.add('hidden');
+  statusContainer.classList.add('hidden');
 }
 
-@keyframes glowMove {
-  0% { left: -150%; }
-  50% { left: 100%; }
-  100% { left: -150%; }
+function setBusy(flag){
+  [generateButton, createMatrixButton, createTableButton].forEach(b=>b.disabled=flag);
+  if(flag){statusContainer.classList.remove('hidden'); loadingIndicator.classList.remove('hidden');}
+  else{loadingIndicator.classList.add('hidden');}
 }
 
-/* Marquee chạy chậm từ phải sang trái với glow */
-.marquee-glow {
-  display: inline-block;
-  white-space: nowrap;
-  position: absolute;
-  right: -100%; /* Bắt đầu bên phải */
-  will-change: transform;
-  animation: marqueeMove 40s linear infinite; /* cực chậm */
-  background: linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,0,0.4), rgba(255,255,255,0.2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+function showError(msg){
+  errorContainer.textContent = msg;
+  errorContainer.classList.remove('hidden');
 }
 
-@keyframes marqueeMove {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-200%); }
+function buildPrompt(type){
+  const grade = gradeSelect.value;
+  const topic = topicSelect.value;
+  const subject = subjectSelect.value;
+  const notes = notesInput.value.trim();
+  const scopeNote = notes?`\nGiới hạn nội dung: ${notes}\n`:'';
+  if(type==='matrix') return `Tạo ma trận đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  return `Tạo đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
 }
-</style>
+
+async function callGeminiAPI(prompt){
+  if(!GEMINI_API_KEY) throw new Error('Thiếu API key trong config.js');
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+  const payload = { contents:[{parts:[{text:prompt}]}] };
+  const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify(payload)});
+  if(!res.ok) throw new Error('API lỗi '+res.status);
+  const data = await res.json();
+  return data?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n')||'';
+}
+
+function extractBlocks(text){
+  const md = (text.match(/```markdown\n([\s\S]*?)```/i)||[])[1]||'';
+  const tex = (text.match(/```latex\n([\s\S]*?)```/i)||[])[1]||'';
+  return {md,tex};
+}
+
+async function handleGeneration(type){
+  hideStates();
+  setBusy(true);
+  try{
+    const prompt = buildPrompt(type);
+    const result = await callGeminiAPI(prompt);
+    const {md,tex} = extractBlocks(result);
+    markdownContent.value = md;
+    latexContent.value = tex;
+    statusContainer.classList.remove('hidden');
+    examOutput.classList.remove('hidden');
+  }catch(e){
+    showError(e.message||e);
+  }finally{
+    setBusy(false);
+  }
+}
+
+async function copyToClipboard(text){
+  try{await navigator.clipboard.writeText(text);}catch{
+    const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  }
+}
+function downloadFile(filename, content){
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
+}
+
+// Events
+createMatrixButton.addEventListener('click', ()=>handleGeneration('matrix'));
+createTableButton.addEventListener('click', ()=>handleGeneration('table'));
+generateButton.addEventListener('click', e=>{ e.preventDefault(); handleGeneration('exam'); });
+
+copyMarkdownButton.addEventListener('click', ()=>copyToClipboard(markdownContent.value));
+copyLatexButton.addEventListener('click', ()=>copyToClipboard(latexContent.value));
+
+downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
+downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
+</script>
+
+</body>
+</html>
