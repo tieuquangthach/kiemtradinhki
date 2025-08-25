@@ -137,3 +137,113 @@
  <div id="errorContainer" class="hidden text-red-700 bg-red-100 p-2 rounded-lg mt-2"></div>
   </div>
 </div>
+    <script>
+  const GEMINI_API_KEY = "AIzaSyD4Zg_Gr8d_WeSEexmc255aZqXFeetkABQ";   // 👉 Dán API key trực tiếp vào đây
+  const GEMINI_MODEL   = "gemini-2.5-flash";
+
+  const gradeSelect = document.getElementById('grade');
+  const topicSelect = document.getElementById('topic');
+  const notesInput = document.getElementById('notes');
+  const subjectSelect = document.getElementById('subject');
+  const statusContainer = document.getElementById('statusContainer');
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const examOutput = document.getElementById('examOutput');
+  const markdownContent = document.getElementById('markdownContent');
+  const latexContent = document.getElementById('latexContent');
+  const errorContainer = document.getElementById('errorContainer');
+
+  const generateButton = document.getElementById('generateButton');
+  const createMatrixButton = document.getElementById('createMatrixButton');
+  const createTableButton = document.getElementById('createTableButton');
+
+  const copyMarkdownButton = document.getElementById('copyMarkdownButton');
+  const copyLatexButton = document.getElementById('copyLatexButton');
+  const downloadMarkdownButton = document.getElementById('downloadMarkdownButton');
+  const downloadLatexButton = document.getElementById('downloadLatexButton');
+
+  function hideStates(){
+    loadingIndicator.classList.add('hidden');
+    examOutput.classList.add('hidden');
+    errorContainer.classList.add('hidden');
+    statusContainer.classList.add('hidden');
+  }
+
+  function setBusy(flag){
+    [generateButton, createMatrixButton, createTableButton].forEach(b=>b.disabled=flag);
+    if(flag){statusContainer.classList.remove('hidden'); loadingIndicator.classList.remove('hidden');}
+    else{loadingIndicator.classList.add('hidden');}
+  }
+
+  function showError(msg){
+    errorContainer.textContent = msg;
+    errorContainer.classList.remove('hidden');
+  }
+
+  function buildPrompt(type){
+    const grade = gradeSelect.value;
+    const topic = topicSelect.value;
+    const subject = subjectSelect.value;
+    const notes = notesInput.value.trim();
+    const scopeNote = notes?`\nGiới hạn nội dung: ${notes}\n`:'';  
+    if(type==='matrix') return `Tạo ma trận đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;  
+    if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;  
+    return `Tạo đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;  
+  }
+
+  async function callGeminiAPI(prompt){
+    if(!GEMINI_API_KEY) throw new Error('Thiếu API key');
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+    const payload = { contents:[{parts:[{text:prompt}]}] };
+    const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify(payload)});
+    if(!res.ok) throw new Error('API lỗi '+res.status);
+    const data = await res.json();
+    return data?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n')||'';
+  }
+
+  function extractBlocks(text){
+    const md = (text.match(/```markdown\n([\s\S]*?)```/i)||[])[1]||'';
+    const tex = (text.match(/```latex\n([\s\S]*?)```/i)||[])[1]||'';
+    return {md,tex};
+  }
+
+  async function handleGeneration(type){
+    hideStates();
+    setBusy(true);
+    try{
+      const prompt = buildPrompt(type);
+      const result = await callGeminiAPI(prompt);
+      const {md,tex} = extractBlocks(result);
+      markdownContent.value = md;
+      latexContent.value = tex;
+      statusContainer.classList.remove('hidden');
+      examOutput.classList.remove('hidden');
+    }catch(e){
+      showError(e.message||e);
+    }finally{
+      setBusy(false);
+    }
+  }
+
+  async function copyToClipboard(text){
+    try{await navigator.clipboard.writeText(text);}catch{
+      const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+  }
+  function downloadFile(filename, content){
+    const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+    const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
+  }
+
+  // Events
+  createMatrixButton.addEventListener('click', ()=>handleGeneration('matrix'));
+  createTableButton.addEventListener('click', ()=>handleGeneration('table'));
+  generateButton.addEventListener('click', e=>{ e.preventDefault(); handleGeneration('exam'); });
+
+  copyMarkdownButton.addEventListener('click', ()=>copyToClipboard(markdownContent.value));
+  copyLatexButton.addEventListener('click', ()=>copyToClipboard(latexContent.value));
+
+  downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
+  downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
+  </script>
+</body>
+</html>
