@@ -217,6 +217,13 @@ function extractBlocks(text){
 }
 
 
+function escapeLatex(str) {
+  return str
+    .replace(/#/g, '\\#')
+    .replace(/%/g, '\\%')
+    .replace(/&/g, '\\&');
+}
+
 async function handleGeneration(type){
   hideStates();
   setBusy(true);
@@ -228,9 +235,12 @@ async function handleGeneration(type){
     markdownContent.value = md;
     latexContent.value = tex;
 
+    // Escape ký tự đặc biệt
+    const safeTex = escapeLatex(tex);
+
     // render LaTeX đẹp
     const latexDiv = document.getElementById('latexRender');
-    latexDiv.innerHTML = `$$${tex}$$`;
+    latexDiv.innerHTML = `$$${safeTex}$$`;
     if (window.MathJax) {
       MathJax.typesetPromise([latexDiv]);
     }
