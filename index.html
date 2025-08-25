@@ -55,42 +55,6 @@
 }
 </style>
 
-/* Glow animation cho chữ chính */
-.glow {
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 150%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-  transform: skewX(-20deg);
-  animation: glowMove 3s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes glowMove {
-  0% { left: -150%; }
-  50% { left: 100%; }
-  100% { left: -150%; }
-}
-
-/* Marquee chạy chậm từ phải sang trái với glow */
-.marquee-glow {
-  display: inline-block;
-  white-space: nowrap;
-  position: absolute;
-  right: -100%; /* Bắt đầu bên phải */
-  will-change: transform;
-  animation: marqueeMove 40s linear infinite; /* cực chậm */
-  background: linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,0,0.4), rgba(255,255,255,0.2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-@keyframes marqueeMove {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-200%); }
 }
 </style>
 
