@@ -30,15 +30,31 @@
   <!-- Tổ Toán - Tin -->
   <h2 class="text-2xl sm:text-3xl font-semibold mb-2 z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">Tổ Toán - Tin</h2>
   
-  <!-- Marquee chạy chậm, glow nhẹ, gộp dòng + năm học -->
-  <div class="text-lg sm:text-xl mb-1 z-10 relative overflow-hidden h-6">
-    <p class="marquee-glow" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-      Chương trình tạo đề kiểm tra định kì theo công văn 7791 - Năm học 2025 - 2026
-    </p>
-  </div>
+<!-- Marquee chạy chậm, màu chữ rõ, dễ đọc -->
+<div class="text-lg sm:text-xl mb-1 z-10 relative overflow-hidden h-6">
+  <p class="marquee-clear">
+    Chương trình tạo đề kiểm tra định kì theo công văn 7791 - Năm học 2025 - 2026
+  </p>
 </div>
 
 <style>
+.marquee-clear {
+  display: inline-block;
+  white-space: nowrap;
+  position: absolute;
+  right: -100%;
+  color: #fff; /* chữ trắng sáng */
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* shadow đen nổi bật */
+  font-weight: 600;
+  animation: marqueeMove 40s linear infinite;
+}
+
+@keyframes marqueeMove {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-200%); }
+}
+</style>
+
 /* Glow animation cho chữ chính */
 .glow {
   position: absolute;
