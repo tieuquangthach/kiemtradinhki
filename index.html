@@ -18,15 +18,26 @@
 
 <div class="bg-app p-6 rounded-2xl shadow-xl max-w-4xl w-full">
 
-<!-- Banner nền xanh đậm, chữ vàng, glow mượt qua chữ chính -->
+<!-- Banner nền xanh đậm, chữ vàng, glow chữ chính, dòng chạy marquee -->
 <div class="bg-gradient-to-r from-blue-800 via-blue-900 to-indigo-900 p-6 rounded-2xl mb-6 text-center shadow-2xl transform hover:scale-105 transition duration-300 relative overflow-hidden">
+  
+  <!-- Tiêu đề chính glow -->
   <h1 class="text-3xl sm:text-4xl font-bold mb-2 uppercase relative inline-block text-yellow-400 z-10" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">
     TRƯỜNG THCS HÀM MINH
-    <!-- Glow effect -->
     <span class="glow"></span>
   </h1>
+  
+  <!-- Tổ Toán - Tin -->
   <h2 class="text-2xl sm:text-3xl font-semibold mb-2 z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">Tổ Toán - Tin</h2>
-  <p class="text-lg sm:text-xl mb-1 z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Chương trình tạo đề kiểm tra định kì theo công văn 7791</p>
+  
+  <!-- Dòng chạy marquee -->
+  <div class="text-lg sm:text-xl mb-1 z-10 relative overflow-hidden h-6">
+    <p class="marquee" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+      Chương trình tạo đề kiểm tra định kì theo công văn 7791
+    </p>
+  </div>
+  
+  <!-- Năm học -->
   <p class="text-lg sm:text-xl font-medium z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Năm học 2025 - 2026</p>
 </div>
 
@@ -49,6 +60,20 @@
   0% { left: -150%; }
   50% { left: 100%; }
   100% { left: -150%; }
+}
+
+/* Marquee text chạy từ trái sang phải */
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  position: absolute;
+  will-change: transform;
+  animation: marqueeMove 10s linear infinite;
+}
+
+@keyframes marqueeMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 </style>
 
