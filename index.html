@@ -1,232 +1,198 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tạo Đề Kiểm Tra</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-  body { font-family: 'Inter', sans-serif; background-color: #1f2937; color: #facc15; }
-  .text-yellow-500 { color: #facc15; }
-  .bg-app { background-color: #ffffff; }
-  .bg-muted { background-color: #f9fafb; }
-  .ring-blue { --tw-ring-color: #93c5fd; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạo Đề Kiểm Tra - Gemini AI</title>
+  <style>
+    body {font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5;}
+    header {background:#4CAF50; color:white; padding:15px; text-align:center;}
+    main {max-width:800px; margin:20px auto; background:white; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+    label {display:block; margin-top:10px; font-weight:bold;}
+    select, textarea {width:100%; padding:8px; margin-top:5px; border-radius:4px; border:1px solid #ccc;}
+    button {margin-top:15px; padding:10px 15px; border:none; border-radius:5px; cursor:pointer; background:#4CAF50; color:white; font-weight:bold;}
+    button:disabled {background:#aaa;}
+    .hidden {display:none;}
+    .output-container {margin-top:20px;}
+    textarea.output {width:100%; height:200px; margin-top:10px;}
+    .actions button {margin-right:10px;}
+    .error {color:red; margin-top:10px;}
+    .loading {margin-top:10px; font-style:italic;}
+  </style>
 </head>
-<body class="p-6 flex justify-center items-start min-h-screen">
-
-<div class="bg-app p-6 rounded-2xl shadow-xl max-w-4xl w-full">
-
-<!-- Banner nền xanh đậm, chữ vàng, glow mượt qua chữ chính -->
-<div class="bg-gradient-to-r from-blue-800 via-blue-900 to-indigo-900 p-6 rounded-2xl mb-6 text-center shadow-2xl transform hover:scale-105 transition duration-300 relative overflow-hidden">
-  <h1 class="text-3xl sm:text-4xl font-bold mb-2 uppercase relative inline-block text-yellow-400 z-10" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">
-    TRƯỜNG THCS HÀM MINH
-    <!-- Glow effect -->
-    <span class="glow"></span>
-  </h1>
-  <h2 class="text-2xl sm:text-3xl font-semibold mb-2 z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">Tổ Toán - Tin</h2>
-  <p class="text-lg sm:text-xl mb-1 z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Chương trình tạo đề kiểm tra định kì theo công văn 7791</p>
-  <p class="text-lg sm:text-xl font-medium z-10" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Năm học 2025 - 2026</p>
-</div>
-
-<style>
-/* Glow animation chỉ cho chữ chính */
-.glow {
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 150%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-  transform: skewX(-20deg);
-  animation: glowMove 3s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes glowMove {
-  0% { left: -150%; }
-  50% { left: 100%; }
-  100% { left: -150%; }
-}
-</style>
-
-
-  <!-- Form nhập -->
-  <form id="examForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-      <label class="block text-gray-700 mb-1">Môn học</label>
-      <select id="subject" class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-900">
-        <option selected>Toán</option>
-        <option>Tin</option>
+<body>
+  <header>
+    <h1>✍️ Ứng dụng tạo Đề kiểm tra THCS</h1>
+    <p>Sử dụng Gemini AI</p>
+  </header>
+  <main>
+    <form id="examForm">
+      <label for="subject">Môn học:</label>
+      <select id="subject">
+        <option value="Toán">Toán</option>
+        <option value="Ngữ văn">Ngữ văn</option>
+        <option value="Tiếng Anh">Tiếng Anh</option>
+        <option value="Vật lý">Vật lý</option>
+        <option value="Hóa học">Hóa học</option>
+        <option value="Sinh học">Sinh học</option>
+        <option value="Lịch sử">Lịch sử</option>
+        <option value="Địa lý">Địa lý</option>
       </select>
-    </div>
 
-    <div>
-      <label class="block text-gray-700 mb-1">Khối</label>
-      <select id="grade" class="w-full px-4 py-2 border rounded-lg">
-        <option>6</option>
-        <option>7</option>
-        <option>8</option>
-        <option selected>9</option>
+      <label for="grade">Khối lớp:</label>
+      <select id="grade">
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
       </select>
-    </div>
 
-    <div>
-      <label class="block text-gray-700 mb-1">Kì kiểm tra</label>
-      <select id="topic" class="w-full px-4 py-2 border rounded-lg">
-        <option>Giữa kì 1</option>
-        <option>Cuối kì 1</option>
-        <option>Giữa kì 2</option>
-        <option selected>Cuối kì 2</option>
+      <label for="topic">Chủ đề / Kiểm tra:</label>
+      <select id="topic">
+        <option value="giữa kì 1">Giữa kì 1</option>
+        <option value="cuối kì 1">Cuối kì 1</option>
+        <option value="giữa kì 2">Giữa kì 2</option>
+        <option value="cuối kì 2">Cuối kì 2</option>
       </select>
+
+      <label for="notes">Ghi chú (nếu có):</label>
+      <textarea id="notes" placeholder="Ví dụ: Giới hạn trong chương Phương trình bậc nhất..."></textarea>
+
+      <button type="button" id="generateButton">Tạo đề kiểm tra</button>
+      <button type="button" id="createMatrixButton">Tạo ma trận đề</button>
+      <button type="button" id="createTableButton">Tạo bảng đặc tả</button>
+    </form>
+
+    <div id="statusContainer" class="hidden">
+      <p id="loadingIndicator" class="loading hidden">⏳ Đang xử lý, vui lòng chờ...</p>
+      <p id="errorContainer" class="error hidden"></p>
     </div>
 
-    <div class="md:col-span-2">
-      <label class="block text-gray-700 mb-1">Ghi chú (tùy chọn)</label>
-      <textarea id="notes" rows="2" placeholder="Ví dụ: Đại số – hệ hai phương trình bậc nhất..." class="w-full px-4 py-2 border rounded-lg text-gray-800"></textarea>
-    </div>
-
-    <div class="md:col-span-2 flex gap-2 mt-2">
-      <button type="button" id="createMatrixButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo ma trận đề</button>
-      <button type="button" id="createTableButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo bảng đặc tả</button>
-      <button type="submit" id="generateButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo Đề Kiểm Tra ✨</button>
-    </div>
-  </form>
-
-  <!-- Kết quả -->
-  <div id="statusContainer" class="mt-6 hidden">
-    <div id="loadingIndicator" class="flex justify-center items-center flex-col hidden">
-      <div class="animate-spin h-12 w-12 border-4 border-gray-400 border-t-blue-500 rounded-full"></div>
-      <p class="mt-2 text-gray-500">Đang tạo nội dung...</p>
-    </div>
-
-    <div id="examOutput" class="hidden mt-4">
-      <div class="flex gap-2 mb-2">
-        <button id="copyMarkdownButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Copy Markdown</button>
-        <button id="downloadMarkdownButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Download .md</button>
+    <div id="examOutput" class="output-container hidden">
+      <h2>Kết quả:</h2>
+      <h3>📄 Markdown</h3>
+      <textarea id="markdownContent" class="output"></textarea>
+      <div class="actions">
+        <button id="copyMarkdownButton">📋 Copy</button>
+        <button id="downloadMarkdownButton">⬇️ Download</button>
       </div>
-      <textarea id="markdownContent" rows="10" class="w-full p-2 border rounded-lg mb-4" readonly></textarea>
 
-      <div class="flex gap-2 mb-2">
-        <button id="copyLatexButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Copy LaTeX</button>
-        <button id="downloadLatexButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Download .tex</button>
+      <h3>📐 LaTeX</h3>
+      <textarea id="latexContent" class="output"></textarea>
+      <div class="actions">
+        <button id="copyLatexButton">📋 Copy</button>
+        <button id="downloadLatexButton">⬇️ Download</button>
       </div>
-      <textarea id="latexContent" rows="10" class="w-full p-2 border rounded-lg" readonly></textarea>
     </div>
+  </main>
 
-    <div id="errorContainer" class="hidden text-red-700 bg-red-100 p-2 rounded-lg mt-2"></div>
-  </div>
-</div>
+  <script>
+  const GEMINI_API_KEY = "API_KEY_CUA_THẦY";   // 👉 Dán API key trực tiếp vào đây
+  const GEMINI_MODEL   = "gemini-1.5-flash-latest";
 
-<script type="module">
-import { GEMINI_API_KEY, GEMINI_MODEL } from './config.js';
+  const gradeSelect = document.getElementById('grade');
+  const topicSelect = document.getElementById('topic');
+  const notesInput = document.getElementById('notes');
+  const subjectSelect = document.getElementById('subject');
+  const statusContainer = document.getElementById('statusContainer');
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const examOutput = document.getElementById('examOutput');
+  const markdownContent = document.getElementById('markdownContent');
+  const latexContent = document.getElementById('latexContent');
+  const errorContainer = document.getElementById('errorContainer');
 
-const gradeSelect = document.getElementById('grade');
-const topicSelect = document.getElementById('topic');
-const notesInput = document.getElementById('notes');
-const subjectSelect = document.getElementById('subject');
-const statusContainer = document.getElementById('statusContainer');
-const loadingIndicator = document.getElementById('loadingIndicator');
-const examOutput = document.getElementById('examOutput');
-const markdownContent = document.getElementById('markdownContent');
-const latexContent = document.getElementById('latexContent');
-const errorContainer = document.getElementById('errorContainer');
+  const generateButton = document.getElementById('generateButton');
+  const createMatrixButton = document.getElementById('createMatrixButton');
+  const createTableButton = document.getElementById('createTableButton');
 
-const generateButton = document.getElementById('generateButton');
-const createMatrixButton = document.getElementById('createMatrixButton');
-const createTableButton = document.getElementById('createTableButton');
+  const copyMarkdownButton = document.getElementById('copyMarkdownButton');
+  const copyLatexButton = document.getElementById('copyLatexButton');
+  const downloadMarkdownButton = document.getElementById('downloadMarkdownButton');
+  const downloadLatexButton = document.getElementById('downloadLatexButton');
 
-const copyMarkdownButton = document.getElementById('copyMarkdownButton');
-const copyLatexButton = document.getElementById('copyLatexButton');
-const downloadMarkdownButton = document.getElementById('downloadMarkdownButton');
-const downloadLatexButton = document.getElementById('downloadLatexButton');
-
-function hideStates(){
-  loadingIndicator.classList.add('hidden');
-  examOutput.classList.add('hidden');
-  errorContainer.classList.add('hidden');
-  statusContainer.classList.add('hidden');
-}
-
-function setBusy(flag){
-  [generateButton, createMatrixButton, createTableButton].forEach(b=>b.disabled=flag);
-  if(flag){statusContainer.classList.remove('hidden'); loadingIndicator.classList.remove('hidden');}
-  else{loadingIndicator.classList.add('hidden');}
-}
-
-function showError(msg){
-  errorContainer.textContent = msg;
-  errorContainer.classList.remove('hidden');
-}
-
-function buildPrompt(type){
-  const grade = gradeSelect.value;
-  const topic = topicSelect.value;
-  const subject = subjectSelect.value;
-  const notes = notesInput.value.trim();
-  const scopeNote = notes?`\nGiới hạn nội dung: ${notes}\n`:'';
-  if(type==='matrix') return `Tạo ma trận đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
-  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
-  return `Tạo đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
-}
-
-async function callGeminiAPI(prompt){
-  if(!GEMINI_API_KEY) throw new Error('Thiếu API key trong config.js');
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
-  const payload = { contents:[{parts:[{text:prompt}]}] };
-  const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify(payload)});
-  if(!res.ok) throw new Error('API lỗi '+res.status);
-  const data = await res.json();
-  return data?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n')||'';
-}
-
-function extractBlocks(text){
-  const md = (text.match(/```markdown\n([\s\S]*?)```/i)||[])[1]||'';
-  const tex = (text.match(/```latex\n([\s\S]*?)```/i)||[])[1]||'';
-  return {md,tex};
-}
-
-async function handleGeneration(type){
-  hideStates();
-  setBusy(true);
-  try{
-    const prompt = buildPrompt(type);
-    const result = await callGeminiAPI(prompt);
-    const {md,tex} = extractBlocks(result);
-    markdownContent.value = md;
-    latexContent.value = tex;
-    statusContainer.classList.remove('hidden');
-    examOutput.classList.remove('hidden');
-  }catch(e){
-    showError(e.message||e);
-  }finally{
-    setBusy(false);
+  function hideStates(){
+    loadingIndicator.classList.add('hidden');
+    examOutput.classList.add('hidden');
+    errorContainer.classList.add('hidden');
+    statusContainer.classList.add('hidden');
   }
-}
 
-async function copyToClipboard(text){
-  try{await navigator.clipboard.writeText(text);}catch{
-    const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  function setBusy(flag){
+    [generateButton, createMatrixButton, createTableButton].forEach(b=>b.disabled=flag);
+    if(flag){statusContainer.classList.remove('hidden'); loadingIndicator.classList.remove('hidden');}
+    else{loadingIndicator.classList.add('hidden');}
   }
-}
-function downloadFile(filename, content){
-  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
-}
 
-// Events
-createMatrixButton.addEventListener('click', ()=>handleGeneration('matrix'));
-createTableButton.addEventListener('click', ()=>handleGeneration('table'));
-generateButton.addEventListener('click', e=>{ e.preventDefault(); handleGeneration('exam'); });
+  function showError(msg){
+    errorContainer.textContent = msg;
+    errorContainer.classList.remove('hidden');
+  }
 
-copyMarkdownButton.addEventListener('click', ()=>copyToClipboard(markdownContent.value));
-copyLatexButton.addEventListener('click', ()=>copyToClipboard(latexContent.value));
+  function buildPrompt(type){
+    const grade = gradeSelect.value;
+    const topic = topicSelect.value;
+    const subject = subjectSelect.value;
+    const notes = notesInput.value.trim();
+    const scopeNote = notes?`\nGiới hạn nội dung: ${notes}\n`:'';  
+    if(type==='matrix') return `Tạo ma trận đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;  
+    if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;  
+    return `Tạo đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;  
+  }
 
-downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
-downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
-</script>
+  async function callGeminiAPI(prompt){
+    if(!GEMINI_API_KEY) throw new Error('Thiếu API key');
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+    const payload = { contents:[{parts:[{text:prompt}]}] };
+    const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify(payload)});
+    if(!res.ok) throw new Error('API lỗi '+res.status);
+    const data = await res.json();
+    return data?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n')||'';
+  }
 
+  function extractBlocks(text){
+    const md = (text.match(/```markdown\n([\s\S]*?)```/i)||[])[1]||'';
+    const tex = (text.match(/```latex\n([\s\S]*?)```/i)||[])[1]||'';
+    return {md,tex};
+  }
+
+  async function handleGeneration(type){
+    hideStates();
+    setBusy(true);
+    try{
+      const prompt = buildPrompt(type);
+      const result = await callGeminiAPI(prompt);
+      const {md,tex} = extractBlocks(result);
+      markdownContent.value = md;
+      latexContent.value = tex;
+      statusContainer.classList.remove('hidden');
+      examOutput.classList.remove('hidden');
+    }catch(e){
+      showError(e.message||e);
+    }finally{
+      setBusy(false);
+    }
+  }
+
+  async function copyToClipboard(text){
+    try{await navigator.clipboard.writeText(text);}catch{
+      const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+  }
+  function downloadFile(filename, content){
+    const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+    const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
+  }
+
+  // Events
+  createMatrixButton.addEventListener('click', ()=>handleGeneration('matrix'));
+  createTableButton.addEventListener('click', ()=>handleGeneration('table'));
+  generateButton.addEventListener('click', e=>{ e.preventDefault(); handleGeneration('exam'); });
+
+  copyMarkdownButton.addEventListener('click', ()=>copyToClipboard(markdownContent.value));
+  copyLatexButton.addEventListener('click', ()=>copyToClipboard(latexContent.value));
+
+  downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
+  downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
+  </script>
 </body>
 </html>
