@@ -2,189 +2,194 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Tạo đề kiểm tra</title>
+  <title>Chương trình tạo đề kiểm tra</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.1/docx.umd.js"></script>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background:#1f2937; color:#facc15; margin:0; padding:0; }
-    .banner { background:#2563eb; color:#ffeb3b; text-align:center; padding:20px; font-size:26px; font-weight:bold; }
-    .banner h1{margin:0;color:red;font-size:32px;}
-    .banner h2{margin:10px 0 0;font-size:22px;color:yellow;}
-    .marquee{margin-top:12px;font-size:20px;font-weight:bold;color:#ffeb3b;white-space:nowrap;overflow:hidden;position:relative;}
-    .marquee span{display:inline-block;padding-left:100%;animation:marquee 18s linear infinite;}
-    @keyframes marquee{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
-    .container{max-width:1200px;margin:30px auto;background:#374151;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.5);}
-    h2{color:#facc15;margin-bottom:16px;text-align:center;font-size:24px;}
-    label{font-size:18px;font-weight:600;display:block;margin:12px 0 6px;color:#facc15;}
-    input,select,textarea{width:100%;padding:12px;font-size:16px;border-radius:8px;border:2px solid #2563eb;background:#1f2937;color:#facc15;margin-bottom:16px;}
-    .button-group{display:flex;justify-content:center;gap:12px;margin:15px 0;}
-    button{background:#2563eb;color:white;font-size:16px;padding:10px 18px;border:none;border-radius:8px;cursor:pointer;}
-    button:hover{background:#1d4ed8;}
-    .result{margin-top:20px;padding:20px;background:#111827;border-radius:8px;border:1px solid #3b82f6;min-height:150px;}
-    .result h3{margin-top:0;}
-    .result-controls{margin-top:8px;display:flex;gap:10px;}
-    .result-controls button{background:#10b981;} /* xanh lá cho khác */
-    .result-controls button:hover{background:#059669;}
-    .result table{border-collapse:collapse;width:100%;margin:10px 0;}
-    .result table, .result th, .result td{border:1px solid #ccc;padding:6px;}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+    .banner {
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      color: white;
+      text-align: center;
+      padding: 25px;
+      font-size: 26px;
+      font-weight: bold;
+      border-radius: 15px;
+      margin: 15px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .btn {
+      margin: 8px 5px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      background-color: #007bff;
+      color: white;
+    }
+    .btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      min-height: 200px;
+    }
+    .tab-buttons {
+      margin-top: 10px;
+    }
+    .tab-buttons button {
+      margin-right: 5px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="banner">
-    <h1>TRƯỜNG THCS HÀM MINH</h1>
-    <h2>Tổ Toán - Tin</h2>
-    <div class="marquee">
-      <span>Chương trình tạo đề kiểm tra định kì theo công văn 7791 - Năm học 2025 - 2026</span>
-    </div>
+    TRƯỜNG THCS HÀM MINH<br>
+    Tổ Toán - Tin<br>
+    Chương trình tạo đề kiểm tra định kì theo công văn 7791 - Năm học 2025 - 2026
   </div>
 
   <div class="container">
-    <h2>Tạo đề kiểm tra</h2>
+    <label>API Key:</label>
+    <input type="password" id="apiKeyInput" placeholder="Nhập API Key Gemini">
+    <button class="btn" onclick="saveApiKey()">Lưu API Key</button>
 
-    <label>API Key Gemini:</label>
-    <input type="password" id="apiKey" placeholder="Nhập API key Gemini tại đây...">
+    <label>Môn học:</label>
+    <input type="text" id="subject" placeholder="Ví dụ: Toán">
 
-    <label for="subject">Môn học:</label>
-    <select id="subject">
-      <option value="Toán">Toán</option>
-      <option value="Tin học">Tin học</option>
-    </select>
+    <label>Khối:</label>
+    <input type="text" id="grade" placeholder="Ví dụ: 9">
 
-    <label for="grade">Khối lớp:</label>
-    <select id="grade">
-      <option value="6">Lớp 6</option>
-      <option value="7">Lớp 7</option>
-      <option value="8">Lớp 8</option>
-      <option value="9">Lớp 9</option>
-    </select>
+    <label>Kì kiểm tra:</label>
+    <input type="text" id="exam" placeholder="Giữa kì I">
 
-    <label for="semester">Kì kiểm tra:</label>
-    <select id="semester">
-      <option value="Giữa kì">Giữa kì</option>
-      <option value="Cuối kì">Cuối kì</option>
-    </select>
+    <label>Prompt:</label>
+    <textarea id="prompt" rows="3" placeholder="Nhập yêu cầu"></textarea>
 
-    <label for="prompt">Prompt:</label>
-    <textarea id="prompt" rows="4" placeholder="Nhập prompt để AI tạo đề..."></textarea>
-
-    <div class="button-group">
-      <button onclick="generate('matrix')">Tạo ma trận đề</button>
-      <button onclick="generate('spec')">Tạo bảng đặc tả</button>
-      <button onclick="generate('exam')">Tạo đề</button>
+    <div>
+      <button class="btn" onclick="generate('matrix')">Tạo ma trận đề</button>
+      <button class="btn" onclick="generate('spec')">Tạo bảng đặc tả</button>
+      <button class="btn" onclick="generate('exam')">Tạo đề kiểm tra</button>
     </div>
 
-    <div id="results"></div>
+    <div class="tab-buttons">
+      <button onclick="showTab('markdown')">Xem Markdown</button>
+      <button onclick="showTab('latex')">Xem LaTeX</button>
+    </div>
+
+    <div id="result-markdown" class="result"></div>
+    <div id="result-latex" class="result hidden"></div>
+
+    <div>
+      <button class="btn" onclick="copyText('result-markdown')">Copy Markdown</button>
+      <button class="btn" onclick="copyText('result-latex')">Copy LaTeX</button>
+      <button class="btn" disabled>Download Word</button>
+    </div>
   </div>
 
   <script>
-    // Load API key nếu đã lưu
-    window.onload = () => {
-      const saved = localStorage.getItem("gemini_key");
-      if(saved) document.getElementById("apiKey").value = saved;
-    };
+    // Lưu và lấy API Key
+    function saveApiKey() {
+      const key = document.getElementById("apiKeyInput").value;
+      if (key) {
+        localStorage.setItem("gemini_api_key", key);
+        alert("API Key đã được lưu!");
+      }
+    }
+    function getApiKey() {
+      return localStorage.getItem("gemini_api_key") || "";
+    }
 
     async function generate(type) {
-      const apiKey = document.getElementById("apiKey").value.trim();
-      const subject = document.getElementById("subject").value;
-      const grade = document.getElementById("grade").value;
-      const semester = document.getElementById("semester").value;
-      const prompt = document.getElementById("prompt").value;
-
+      const apiKey = getApiKey();
       if (!apiKey) {
-        alert("Vui lòng nhập API Key Gemini.");
+        alert("Chưa có API Key!");
         return;
       }
-      localStorage.setItem("gemini_key", apiKey);
+      const subject = document.getElementById("subject").value;
+      const grade = document.getElementById("grade").value;
+      const exam = document.getElementById("exam").value;
+      const prompt = document.getElementById("prompt").value;
+      const query = `Môn: ${subject}, Khối: ${grade}, Kì: ${exam}. Yêu cầu: ${prompt}. Loại: ${type}`;
 
-      let taskName = "";
-      if (type === "matrix") taskName = "Tạo ma trận đề";
-      if (type === "spec") taskName = "Tạo bảng đặc tả";
-      if (type === "exam") taskName = "Tạo đề";
-
-      const inputPrompt = `${taskName} cho môn ${subject}, lớp ${grade}, kì ${semester}. Nội dung: ${prompt}`;
+      document.getElementById("result-markdown").innerHTML = "⏳ Đang tạo nội dung...";
+      document.getElementById("result-latex").innerHTML = "";
 
       try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ role: "user", parts: [{ text: inputPrompt }] }]
-            }),
-          }
-        );
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Không có dữ liệu trả về.";
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: query }]}] })
+        });
 
-        showResult(type, text);
-      } catch (err) {
-        console.error(err);
-        alert("Lỗi khi gọi API: " + err.message);
+        const data = await response.json();
+        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+          const text = data.candidates[0].content.parts[0].text;
+
+          // Hiển thị Markdown
+          document.getElementById("result-markdown").innerHTML = marked.parse(text);
+
+          // Hiển thị LaTeX (chỉ raw text)
+          document.getElementById("result-latex").textContent = text;
+        } else {
+          document.getElementById("result-markdown").innerHTML = "⚠️ Không có dữ liệu trả về.";
+        }
+      } catch (error) {
+        document.getElementById("result-markdown").innerHTML = "❌ Lỗi API.";
       }
     }
 
-    function showResult(type, text) {
-      const resultsDiv = document.getElementById("results");
-
-      let blockId = `result-${type}`;
-      let old = document.getElementById(blockId);
-      if (old) old.remove();
-
-      let div = document.createElement("div");
-      div.className = "result";
-      div.id = blockId;
-
-      let title = document.createElement("h3");
-      title.style.color = "#facc15";
-      if (type === "matrix") title.innerText = "Kết quả - Ma trận đề";
-      if (type === "spec") title.innerText = "Kết quả - Bảng đặc tả";
-      if (type === "exam") title.innerText = "Kết quả - Đề kiểm tra";
-
-      let content = document.createElement("div");
-      content.innerHTML = marked.parse(text);
-      MathJax.typesetPromise([content]);
-
-      let controls = document.createElement("div");
-      controls.className = "result-controls";
-
-      let copyBtn = document.createElement("button");
-      copyBtn.innerText = "Copy";
-      copyBtn.onclick = () => navigator.clipboard.writeText(text);
-
-      let downloadBtn = document.createElement("button");
-      downloadBtn.innerText = "Download Word";
-      downloadBtn.onclick = () => downloadWord(text, type);
-
-      controls.appendChild(copyBtn);
-      controls.appendChild(downloadBtn);
-
-      div.appendChild(title);
-      div.appendChild(content);
-      div.appendChild(controls);
-
-      resultsDiv.appendChild(div);
+    function showTab(tab) {
+      document.getElementById("result-markdown").classList.add("hidden");
+      document.getElementById("result-latex").classList.add("hidden");
+      document.getElementById("result-" + tab).classList.remove("hidden");
     }
 
-    async function downloadWord(text, type) {
-      const { Document, Packer, Paragraph, TextRun } = window.docx;
-
-      let doc = new Document({
-        sections: [{
-          properties: {},
-          children: [new Paragraph({ children: [new TextRun(text)] })],
-        }],
-      });
-
-      const blob = await Packer.toBlob(doc);
-      const url = URL.createObjectURL(blob);
-
-      let a = document.createElement("a");
-      a.href = url;
-      a.download = `${type}.docx`;
-      a.click();
-
-      URL.revokeObjectURL(url);
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert("Đã copy nội dung!");
+    }
+  </script>
+</body>
+</html>
