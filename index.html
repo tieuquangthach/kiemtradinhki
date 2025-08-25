@@ -2,173 +2,143 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Tạo đề kiểm tra</title>
+  <title>Chương trình tạo đề kiểm tra</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/pagedown@1.0.0/Markdown.Converter.js"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #1f2937;
-      color: #facc15;
-      margin: 0;
-      padding: 0;
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; background: #f9f9ff; }
+    h2 { margin-top: 0; color: #003366; }
+    input, textarea, select, button {
+      width: 100%; padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px solid #ccc;
     }
-
-    /* Banner */
-    .banner {
-      background-color: #2563eb;
-      color: #ffeb3b;
-      text-align: center;
-      padding: 20px;
-      font-size: 26px;
-      font-weight: bold;
-    }
-    .banner h1 {
-      margin: 0;
-      color: red;
-      font-size: 32px;
-    }
-    .banner h2 {
-      margin: 10px 0 0;
-      font-size: 22px;
-      color: yellow;
-    }
-    .marquee {
-      margin-top: 12px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #ffeb3b;
-      white-space: nowrap;
-      overflow: hidden;
-      position: relative;
-    }
-    .marquee span {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marquee 18s linear infinite;
-    }
-    @keyframes marquee {
-      0%   { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* Container */
-    .container {
-      max-width: 1200px;
-      margin: 30px auto;
-      background: #374151;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    }
-
-    h2 {
-      color: #facc15;
-      margin-bottom: 16px;
-      text-align: center;
-      font-size: 24px;
-    }
-
-    label {
-      font-size: 18px;
-      font-weight: 600;
-      display: block;
-      margin: 12px 0 6px;
-      color: #facc15;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 2px solid #2563eb;
-      background: #1f2937;
-      color: #facc15;
-      margin-bottom: 16px;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 6px #3b82f6;
-    }
-
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
-
     button {
-      background-color: #2563eb;
-      color: white;
-      font-size: 16px;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      background: #0077cc; color: white; font-weight: bold; cursor: pointer; transition: 0.2s;
     }
-    button:hover {
-      background-color: #1d4ed8;
-    }
-
-    /* Kết quả */
-    .result {
-      margin-top: 20px;
-      padding: 20px;
-      background: #111827;
-      border-radius: 8px;
-      border: 1px solid #3b82f6;
-      min-height: 150px;
-    }
+    button:hover { background: #005fa3; }
+    .result { border: 1px solid #ccc; padding: 10px; border-radius: 8px; background: white; margin-top: 10px; }
+    .result-controls { margin-top: 5px; }
+    .small-btn { padding: 5px 8px; font-size: 14px; margin-right: 5px; }
   </style>
 </head>
 <body>
-  <div class="banner">
-    <h1>TRƯỜNG THCS HÀM MINH</h1>
-    <h2>Tổ Toán - Tin</h2>
-    <div class="marquee">
-      <span>Chương trình tạo đề kiểm tra định kì theo công văn 7791 - Năm học 2025 - 2026</span>
+  <h1 style="text-align:center; color:#b30000;">
+    Chương trình tạo đề kiểm tra định kì theo công văn 7791 - Năm học 2025 - 2026
+  </h1>
+  <h2 style="text-align:center; color:#006600;">TRƯỜNG THCS HÀM MINH</h2>
+
+  <!-- API Key -->
+  <div class="card">
+    <h2>API Key</h2>
+    <input type="password" id="apiKeyInput" placeholder="Nhập API key Gemini">
+    <button onclick="saveApiKey()">Lưu API Key</button>
+  </div>
+
+  <!-- Prompt -->
+  <div class="card">
+    <h2>Thông tin</h2>
+    <label>Môn học</label>
+    <input type="text" id="subject" placeholder="Ví dụ: Toán">
+
+    <label>Khối</label>
+    <input type="text" id="grade" placeholder="Ví dụ: 9">
+
+    <label>Kì kiểm tra</label>
+    <input type="text" id="exam" placeholder="Ví dụ: Giữa kì I">
+
+    <label>Prompt</label>
+    <textarea id="prompt" rows="4" placeholder="Nhập yêu cầu tạo đề..."></textarea>
+
+    <button onclick="generate('ma trận đề')">Tạo ma trận đề</button>
+    <button onclick="generate('bảng đặc tả')">Tạo bảng đặc tả</button>
+    <button onclick="generate('đề kiểm tra')">Tạo đề kiểm tra</button>
+  </div>
+
+  <!-- Kết quả -->
+  <div class="card">
+    <h2>Kết quả</h2>
+    <div id="result" class="result"></div>
+    <div class="result-controls">
+      <button class="small-btn" onclick="copyResult()">📋 Copy</button>
+      <button class="small-btn" onclick="downloadWord()">⬇️ Download Word</button>
     </div>
   </div>
 
-  <div class="container">
-    <h2>Tạo đề kiểm tra</h2>
+  <script>
+    // Load API key từ localStorage khi mở
+    window.onload = () => {
+      const savedKey = localStorage.getItem("gemini_api_key");
+      if (savedKey) document.getElementById("apiKeyInput").value = savedKey;
+    };
 
-    <label for="subject">Môn học:</label>
-    <select id="subject">
-      <option value="toan">Toán</option>
-      <option value="tin">Tin học</option>
-    </select>
+    function saveApiKey() {
+      const key = document.getElementById("apiKeyInput").value.trim();
+      if (key) {
+        localStorage.setItem("gemini_api_key", key);
+        alert("API key đã lưu trong trình duyệt!");
+      } else {
+        alert("Nhập API key trước khi lưu.");
+      }
+    }
 
-    <label for="grade">Khối lớp:</label>
-    <select id="grade">
-      <option value="6">Lớp 6</option>
-      <option value="7">Lớp 7</option>
-      <option value="8">Lớp 8</option>
-      <option value="9">Lớp 9</option>
-    </select>
+    function getApiKey() {
+      return document.getElementById("apiKeyInput").value.trim() || localStorage.getItem("gemini_api_key");
+    }
 
-    <label for="semester">Kì kiểm tra:</label>
-    <select id="semester">
-      <option value="giua">Giữa kì</option>
-      <option value="cuoi">Cuối kì</option>
-    </select>
+    async function generate(type) {
+      const apiKey = getApiKey();
+      if (!apiKey) return alert("Chưa có API key!");
+      const subject = document.getElementById("subject").value;
+      const grade = document.getElementById("grade").value;
+      const exam = document.getElementById("exam").value;
+      const userPrompt = document.getElementById("prompt").value;
 
-    <label for="prompt">Prompt:</label>
-    <textarea id="prompt" rows="4" placeholder="Nhập prompt để AI tạo đề..."></textarea>
+      const prompt = `Hãy tạo ${type} môn ${subject}, khối ${grade}, ${exam}. ${userPrompt}`;
 
-    <div class="button-group">
-      <button type="button">Tạo ma trận đề</button>
-      <button type="button">Tạo bảng đặc tả</button>
-      <button type="button">Tạo đề</button>
-    </div>
+      const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }]}] })
+      });
 
-    <div class="result">
-      <h3 style="color:#facc15;">Kết quả hiển thị ở đây</h3>
-      <p style="color:white;">(Sau khi bấm nút, nội dung sẽ xuất hiện tại đây...)</p>
-    </div>
-  </div>
+      const data = await res.json();
+      console.log(data);
+
+      let output = data.candidates?.[0]?.content?.parts?.[0]?.text || "❌ Không có dữ liệu.";
+      
+      // Markdown + LaTeX render
+      const html = marked.parse(output);
+      document.getElementById("result").innerHTML = html;
+      
+      // Xử lý LaTeX với KaTeX
+      renderMathInElement(document.getElementById("result"), {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ]
+      });
+
+      window.lastResult = output; // lưu để copy/download
+    }
+
+    function copyResult() {
+      if (!window.lastResult) return;
+      navigator.clipboard.writeText(window.lastResult);
+      alert("Đã copy kết quả!");
+    }
+
+    function downloadWord() {
+      if (!window.lastResult) return;
+      const blob = new Blob([window.lastResult], { type: "application/msword" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ketqua.doc";
+      link.click();
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 </body>
 </html>
