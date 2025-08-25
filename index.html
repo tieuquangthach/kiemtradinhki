@@ -1,79 +1,398 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Gemini Mini Chat</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>chương trình Tạo Đề Kiểm Tra Toán (Nâng cấp)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
-    #app { max-width: 800px; margin: 30px auto; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    h2 { text-align: center; color: #333; }
-    #apikey, #prompt { width: 100%; padding: 10px; margin: 8px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
-    #send { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; }
-    #send:hover { background: #45a049; }
-    #response { margin-top: 20px; padding: 15px; background: #fafafa; border-radius: 8px; border: 1px solid #ddd; white-space: pre-wrap; }
-    label { font-weight: bold; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #1f2937; color: #facc15; }
+    .text-yellow-500 { color: #facc15; }
+    .text-gray-800 { color: #1f2937; }
+    .text-gray-500 { color: #6b7280; }
+    .text-gray-700 { color: #374151; }
+    .bg-app { background-color: #ffffff; }
+    .bg-muted { background-color: #f9fafb; }
+    .ring-blue { --tw-ring-color: #93c5fd; }
   </style>
 </head>
-<body>
-  <div id="app">
-    <h2>💬 Gemini Mini Chat</h2>
-    <label for="apikey">API Key:</label>
-    <input id="apikey" type="password" placeholder="Ví dụ: AIzaSy....">
-    
-    <label for="prompt">Câu hỏi / yêu cầu:</label>
-    <textarea id="prompt" rows="4" placeholder="Nhập câu hỏi của thầy..."></textarea>
-    
-    <button id="send">Gửi</button>
-    <div id="response"></div>
+<body class="p-4 sm:p-8 md:p-12 min-h-screen flex items-center justify-center">
+  <div class="bg-app p-6 sm:p-8 rounded-2xl shadow-xl max-w-5xl w-full">
+  <div class="flex flex-col items-center mb-6">
+    <!-- Logo -->
+    <img src="logo.jpg" alt="Logo Trường THCS Hàm Minh" class="w-24 h-24 mb-4 rounded-full shadow-lg">
+
+    <!-- Tiêu đề chính -->
+    <h1 class="text-3xl sm:text-4xl font-semibold text-center mb-2 text-yellow-500">
+        Trường THCS Hàm Minh
+    </h1>
+
+    <!-- Tiêu đề phụ -->
+    <h2 class="text-2xl font-semibold text-center mb-2 text-yellow-500">
+        Tổ Toán - Tin
+    </h2>
+
+    <!-- Mô tả -->
+    <p class="text-center text-gray-500 mb-8">
+        Tạo đề kiểm tra môn Toán THCS theo cấu trúc và định dạng chuẩn.
+    </p>
+</div>
+
+
+    <!-- Cấu hình API -->
+    <section class="mb-6 grid grid-cols-1 md:grid-cols-12 gap-4 bg-muted p-4 rounded-xl border border-gray-200">
+      <div class="md:col-span-7">
+        <label for="apiKey" class="block text-sm font-medium text-gray-700 mb-1">Gemini API Key</label>
+        <div class="flex gap-2">
+          <input id="apiKey" type="password" placeholder="Dán API key của bạn"
+                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          <button id="toggleKey" type="button" class="px-3 py-2 border rounded-lg text-gray-700">Hiện</button>
+        </div>
+        <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
+          <input id="rememberKey" type="checkbox" class="rounded" />
+          <label for="rememberKey">Lưu API key vào trình duyệt (localStorage)</label>
+        </div>
+      </div>
+      <div class="md:col-span-5">
+        <label for="model" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+        <select id="model" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+          <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp</option>
+          <option value="gemini-2.0-pro-exp">gemini-2.0-pro-exp</option>
+          <option value="gemini-2.5-flash-preview-05-20">gemini-2.5-flash-preview-05-20</option>
+        </select>
+        <p class="mt-2 text-xs text-gray-500">Hãy chọn model bạn có quyền dùng trong tài khoản.</p>
+      </div>
+    </section>
+
+    <!-- Form nhập -->
+    <form id="examForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="col-span-1 md:col-span-2">
+        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Môn học</label>
+        <input type="text" id="subject" value="Toán" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-gray-100 cursor-not-allowed" />
+      </div>
+
+      <div>
+        <label for="grade" class="block text-sm font-medium text-gray-700 mb-1">Khối</label>
+        <select id="grade" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option value="6">Khối 6</option>
+          <option value="7">Khối 7</option>
+          <option value="8">Khối 8</option>
+          <option value="9" selected>Khối 9</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="topic" class="block text-sm font-medium text-gray-700 mb-1">Kì kiểm tra</label>
+        <select id="topic" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option>Giữa kì 1</option>
+          <option>Cuối kì 1</option>
+          <option>Giữa kì 2</option>
+          <option selected>Cuối kì 2</option>
+        </select>
+      </div>
+
+      <!-- Gợi ý nhanh -->
+      <div class="md:col-span-2">
+        <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Ghi chú/Giới hạn nội dung (tùy chọn)</label>
+        <textarea id="notes" rows="2" placeholder="Ví dụ: Đại số – hệ hai phương trình bậc nhất, hình học – góc nội tiếp..."
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-inner text-gray-800"></textarea>
+        <p class="mt-1 text-xs text-gray-500">Nếu để trống, đề sẽ tạo theo CT chung của khối.</p>
+      </div>
+
+      <!-- Nút tạo -->
+      <div class="md:col-span-2 flex flex-col sm:flex-row justify-center gap-3 mt-2">
+        <button type="button" id="createMatrixButton" class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 focus:ring-4 ring-blue transition">Tạo ma trận đề</button>
+        <button type="button" id="createTableButton" class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 focus:ring-4 ring-blue transition">Tạo bảng đặc tả</button>
+        <button type="submit" id="generateButton" class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 focus:ring-4 ring-blue transition">Tạo Đề Kiểm Tra ✨</button>
+      </div>
+    </form>
+
+    <!-- Trạng thái & Kết quả -->
+    <section id="statusContainer" class="mt-8 hidden">
+      <div id="loadingIndicator" class="flex justify-center items-center flex-col hidden" aria-live="polite">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-400 border-t-blue-500"></div>
+        <p class="mt-3 text-gray-500">Đang tạo nội dung...</p>
+      </div>
+
+      <div id="examOutput" class="hidden">
+        <!-- LaTeX -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
+            <h3 class="text-2xl font-semibold text-gray-800">Nội dung (LaTeX)</h3>
+            <div class="flex gap-2">
+              <button id="copyLatexButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300">Sao chép LaTeX</button>
+              <button id="downloadLatexButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300">Tải .tex</button>
+            </div>
+          </div>
+          <textarea id="latexContent" class="w-full h-80 p-4 border border-gray-300 rounded-lg shadow-inner resize-y text-gray-800 font-mono text-sm" readonly></textarea>
+        </div>
+
+        <!-- Markdown -->
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
+            <h3 class="text-2xl font-semibold text-gray-800">Nội dung (Markdown)</h3>
+            <div class="flex gap-2">
+              <button id="copyMarkdownButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300">Sao chép Markdown</button>
+              <button id="downloadMarkdownButton" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300">Tải .md</button>
+            </div>
+          </div>
+          <textarea id="markdownContent" class="w-full h-80 p-4 border border-gray-300 rounded-lg shadow-inner resize-y text-gray-800 font-mono text-sm" readonly></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button id="clearOutputButton" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm">Xóa kết quả</button>
+        </div>
+
+        <div id="messageBox" class="bg-green-100 text-green-700 p-3 rounded-lg text-sm mb-4 hidden" role="alert"></div>
+      </div>
+
+      <div id="errorContainer" class="bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg hidden" role="alert">
+        <p class="font-bold">Lỗi:</p>
+        <p id="errorMessage" class="text-sm mt-1"></p>
+      </div>
+    </section>
   </div>
 
   <script>
-    // Khi tải trang: điền API key đã lưu (nếu có)
-    window.onload = () => {
-      const savedKey = localStorage.getItem("gemini_api_key");
-      if (savedKey) document.getElementById("apikey").value = savedKey;
-    };
+    // ===== DOM =====
+    const form = document.getElementById('examForm');
+    const gradeSelect = document.getElementById('grade');
+    const topicSelect = document.getElementById('topic');
+    const notesInput = document.getElementById('notes');
+    const modelSelect = document.getElementById('model');
 
-    async function callGemini(apiKey, prompt) {
-      const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
-      const body = { contents: [{ role: "user", parts: [{ text: prompt }]}] };
+    const apiKeyInput = document.getElementById('apiKey');
+    const toggleKeyBtn = document.getElementById('toggleKey');
+    const rememberKey = document.getElementById('rememberKey');
 
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) throw new Error("Lỗi API: " + res.status);
-      return res.json();
+    const generateButton = document.getElementById('generateButton');
+    const createMatrixButton = document.getElementById('createMatrixButton');
+    const createTableButton = document.getElementById('createTableButton');
+
+    const statusContainer = document.getElementById('statusContainer');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const examOutput = document.getElementById('examOutput');
+    const latexContent = document.getElementById('latexContent');
+    const markdownContent = document.getElementById('markdownContent');
+    const copyLatexButton = document.getElementById('copyLatexButton');
+    const copyMarkdownButton = document.getElementById('copyMarkdownButton');
+    const downloadLatexButton = document.getElementById('downloadLatexButton');
+    const downloadMarkdownButton = document.getElementById('downloadMarkdownButton');
+    const clearOutputButton = document.getElementById('clearOutputButton');
+    const messageBox = document.getElementById('messageBox');
+    const errorContainer = document.getElementById('errorContainer');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // ===== State =====
+    let lastGeneratedText = '';
+
+    // ===== Helpers =====
+    function hideAllStates() {
+      loadingIndicator.classList.add('hidden');
+      examOutput.classList.add('hidden');
+      errorContainer.classList.add('hidden');
+      statusContainer.classList.add('hidden');
     }
 
-    document.getElementById("send").addEventListener("click", async () => {
-      const apiKey = document.getElementById("apikey").value.trim();
-      const prompt = document.getElementById("prompt").value.trim();
-      const responseDiv = document.getElementById("response");
+    function showMessage(text) {
+      messageBox.textContent = text;
+      messageBox.classList.remove('hidden');
+      setTimeout(() => messageBox.classList.add('hidden'), 2500);
+    }
 
-      if (!apiKey) {
-        alert("⚠️ Vui lòng nhập API Key");
-        return;
+    function setBusy(isBusy) {
+      [generateButton, createMatrixButton, createTableButton].forEach(btn => btn.disabled = isBusy);
+      if (isBusy) {
+        statusContainer.classList.remove('hidden');
+        loadingIndicator.classList.remove('hidden');
+      } else {
+        loadingIndicator.classList.add('hidden');
       }
-      if (!prompt) {
-        alert("⚠️ Vui lòng nhập câu hỏi");
-        return;
-      }
+    }
 
-      // Lưu API key vào LocalStorage
-      localStorage.setItem("gemini_api_key", apiKey);
+    function fileDownload(filename, content) {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
 
-      responseDiv.innerHTML = "⏳ Đang xử lý...";
+    async function copyToClipboard(text) {
       try {
-        const data = await callGemini(apiKey, prompt);
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Không có phản hồi";
-        responseDiv.innerHTML = marked.parse(text);
-      } catch (err) {
-        responseDiv.innerHTML = "❌ Lỗi: " + err.message;
+        await navigator.clipboard.writeText(text);
+        showMessage('Đã sao chép vào clipboard.');
+      } catch (e) {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove();
+        showMessage('Đã sao chép (fallback).');
       }
+    }
+
+    function loadSavedPrefs() {
+      const savedKey = localStorage.getItem('gemini_api_key');
+      if (savedKey) { apiKeyInput.value = savedKey; rememberKey.checked = true; }
+      const savedModel = localStorage.getItem('gemini_model');
+      if (savedModel) modelSelect.value = savedModel;
+      const savedGrade = localStorage.getItem('exam_grade');
+      if (savedGrade) gradeSelect.value = savedGrade;
+      const savedTopic = localStorage.getItem('exam_topic');
+      if (savedTopic) topicSelect.value = savedTopic;
+    }
+
+    function persistPrefs() {
+      if (rememberKey.checked) localStorage.setItem('gemini_api_key', apiKeyInput.value.trim());
+      else localStorage.removeItem('gemini_api_key');
+      localStorage.setItem('gemini_model', modelSelect.value);
+      localStorage.setItem('exam_grade', gradeSelect.value);
+      localStorage.setItem('exam_topic', topicSelect.value);
+    }
+
+    function buildPrompt(type, grade, topic, notes) {
+      const scopeNote = notes ? `\nGiới hạn nội dung: ${notes}\n` : '';
+      if (type === 'matrix') {
+        return `Tạo một ma trận đề kiểm tra môn Toán khối ${grade}, kì thi "${topic}".${scopeNote}\nCấu trúc ma trận thể hiện rõ các mức độ nhận thức (Nhận biết, Thông hiểu, Vận dụng) và phân phối điểm cho từng phần (trắc nghiệm nhiều lựa chọn, đúng/sai, trả lời ngắn, tự luận).\nChỉ trả lời dưới hai khối mã: trước là Markdown, sau là LaTeX.\n\n\`\`\`markdown\n# Ma trận đề\n(điền nội dung ở đây)\n\`\`\`\n\n\`\`\`latex\n% Ma trận đề (LaTeX)\n% dùng tabular/array rõ ràng\n\`\`\``;
+      }
+      if (type === 'table') {
+        return `Tạo một bảng đặc tả đề kiểm tra môn Toán khối ${grade}, kì thi "${topic}".${scopeNote}\nBảng đặc tả chi tiết chủ đề, số câu, điểm, mức độ (NB, TH, VD).\nChỉ trả lời dưới hai khối mã: Markdown rồi LaTeX.\n\n\`\`\`markdown\n# Bảng đặc tả\n(điền nội dung ở đây)\n\`\`\`\n\n\`\`\`latex\n% Bảng đặc tả (LaTeX)\n\`\`\``;
+      }
+      return `Bạn là trợ lý chuyên nghiệp tạo đề kiểm tra Toán THCS. Hãy tạo đề cho khối ${grade}, kì "${topic}".${scopeNote}\nCấu trúc (10 điểm):\n- Trắc nghiệm (7đ): 12 câu nhiều lựa chọn (0,25đ mỗi câu, NB–TH), 2 câu đúng/sai (1,0đ, NB–TH–VD), 2 câu trả lời ngắn (1,0đ, TH).\n- Tự luận (3đ): 3 câu yêu cầu vận dụng.\nYêu cầu: Xuất cả Markdown (trước) và LaTeX (sau). Mỗi phần nằm trong khối mã.\nTiêu đề (Markdown) bảng 2 cột:\n| Họ và tên: ............... | Trường THCS Hàm Minh |\n| Lớp: ......... | Kiểm tra ${topic} |\n|  | Thời gian: 90 phút |\n\nTrắc nghiệm 4 lựa chọn A,B,C,D; đánh số liên tục; có đáp án cuối đề.\nKhối LaTeX tiếp theo phải có:\n\\begin{tabular}{l|l}\nHọ và tên: ............... & Trường THCS Hàm Minh \\\\nLớp: ......... & Kiểm tra ${topic} \\\\n & Thời gian: 90 phút \\\\n\\end{tabular}`;
+    }
+
+    // Exponential backoff fetch
+    async function callGeminiAPI(prompt, model, retries = 0) {
+      const key = apiKeyInput.value.trim();
+      if (!key) throw new Error('Vui lòng nhập API key.');
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+      const payload = { contents: [{ parts: [{ text: prompt }] }] };
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          if (res.status === 429 && retries < 5) {
+            const delay = Math.pow(2, retries) * 1000 + Math.random() * 1000;
+            await new Promise(r => setTimeout(r, delay));
+            return callGeminiAPI(prompt, model, retries + 1);
+          }
+          const text = await res.text();
+          throw new Error(`HTTP ${res.status} – ${text.substring(0, 200)}`);
+        }
+        const data = await res.json();
+        const content = data?.candidates?.[0]?.content?.parts?.map(p => p.text).join('\n') || '';
+        if (!content) throw new Error('Không nhận được nội dung từ API.');
+        return content;
+      } catch (err) {
+        if (retries < 5) {
+          const delay = Math.pow(2, retries) * 1000 + Math.random() * 1000;
+          await new Promise(r => setTimeout(r, delay));
+          return callGeminiAPI(prompt, model, retries + 1);
+        }
+        throw new Error('Không thể kết nối đến API Gemini sau nhiều lần thử lại. Chi tiết: ' + err.message);
+      }
+    }
+
+    // Robust extraction for Markdown/LaTeX blocks
+    function extractBlocks(text) {
+      const mdRegex = /```markdown\n([\s\S]*?)```/i;
+      const texRegex = /```latex\n([\s\S]*?)```/i;
+      const altMd = /```md\n([\s\S]*?)```/i;
+      const altTex = /```tex\n([\s\S]*?)```/i;
+
+      const mdMatch = text.match(mdRegex) || text.match(altMd);
+      const texMatch = text.match(texRegex) || text.match(altTex);
+
+      let md = mdMatch ? mdMatch[1].trim() : '';
+      let tex = texMatch ? texMatch[1].trim() : '';
+
+      // Fallback: try to split if only one block found
+      if (!md || !tex) {
+        // Try to find two fenced blocks regardless of language
+        const fences = [...text.matchAll(/```[\w-]*\n([\s\S]*?)```/g)].map(m => m[1].trim());
+        if (fences.length >= 2) {
+          md = md || fences[0];
+          tex = tex || fences[1];
+        } else {
+          // last resort: treat the whole text as Markdown and leave LaTeX blank
+          md = md || text.trim();
+        }
+      }
+      return { md, tex };
+    }
+
+    // ===== Events =====
+    toggleKeyBtn.addEventListener('click', () => {
+      apiKeyInput.type = apiKeyInput.type === 'password' ? 'text' : 'password';
+      toggleKeyBtn.textContent = apiKeyInput.type === 'password' ? 'Hiện' : 'Ẩn';
     });
+
+    createMatrixButton.addEventListener('click', () => handleGeneration('matrix'));
+    createTableButton.addEventListener('click', () => handleGeneration('table'));
+    form.addEventListener('submit', (e) => { e.preventDefault(); handleGeneration('exam'); });
+
+    copyLatexButton.addEventListener('click', () => copyToClipboard(latexContent.value));
+    copyMarkdownButton.addEventListener('click', () => copyToClipboard(markdownContent.value));
+
+    downloadLatexButton.addEventListener('click', () => fileDownload(`de-toan-${gradeSelect.value}-${topicSelect.value}-latex.tex`, latexContent.value));
+    downloadMarkdownButton.addEventListener('click', () => fileDownload(`de-toan-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
+
+    clearOutputButton.addEventListener('click', () => {
+      latexContent.value = '';
+      markdownContent.value = '';
+      lastGeneratedText = '';
+      showMessage('Đã xóa kết quả.');
+    });
+
+    async function handleGeneration(type) {
+      hideAllStates();
+      setBusy(true);
+      errorMessage.textContent = '';
+      errorContainer.classList.add('hidden');
+
+      const grade = gradeSelect.value;
+      const topic = topicSelect.value;
+      const notes = notesInput.value.trim();
+      const model = modelSelect.value;
+
+      try {
+        // Validate simple
+        if (!apiKeyInput.value.trim()) throw new Error('Thiếu API key.');
+        persistPrefs();
+
+        const prompt = buildPrompt(type, grade, topic, notes);
+        const result = await callGeminiAPI(prompt, model);
+        lastGeneratedText = result;
+
+        const { md, tex } = extractBlocks(result);
+        if (!md && !tex) throw new Error('Không thể phân tích phản hồi từ model.');
+
+        markdownContent.value = md;
+        latexContent.value = tex;
+
+        statusContainer.classList.remove('hidden');
+        loadingIndicator.classList.add('hidden');
+        examOutput.classList.remove('hidden');
+      } catch (err) {
+        loadingIndicator.classList.add('hidden');
+        errorContainer.classList.remove('hidden');
+        errorMessage.textContent = 'Có lỗi xảy ra: ' + (err?.message || err);
+        console.error(err);
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    // Init
+    loadSavedPrefs();
   </script>
 </body>
 </html>
