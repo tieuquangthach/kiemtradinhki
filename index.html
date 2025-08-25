@@ -24,7 +24,12 @@
     button{background:#2563eb;color:white;font-size:16px;padding:10px 18px;border:none;border-radius:8px;cursor:pointer;}
     button:hover{background:#1d4ed8;}
     .result{margin-top:20px;padding:20px;background:#111827;border-radius:8px;border:1px solid #3b82f6;min-height:150px;}
+    .result h3{margin-top:0;}
     .result-controls{margin-top:8px;display:flex;gap:10px;}
+    .result-controls button{background:#10b981;} /* xanh lá cho khác */
+    .result-controls button:hover{background:#059669;}
+    .result table{border-collapse:collapse;width:100%;margin:10px 0;}
+    .result table, .result th, .result td{border:1px solid #ccc;padding:6px;}
   </style>
 </head>
 <body>
@@ -44,8 +49,8 @@
 
     <label for="subject">Môn học:</label>
     <select id="subject">
-      <option value="toan">Toán</option>
-      <option value="tin">Tin học</option>
+      <option value="Toán">Toán</option>
+      <option value="Tin học">Tin học</option>
     </select>
 
     <label for="grade">Khối lớp:</label>
@@ -58,8 +63,8 @@
 
     <label for="semester">Kì kiểm tra:</label>
     <select id="semester">
-      <option value="giua">Giữa kì</option>
-      <option value="cuoi">Cuối kì</option>
+      <option value="Giữa kì">Giữa kì</option>
+      <option value="Cuối kì">Cuối kì</option>
     </select>
 
     <label for="prompt">Prompt:</label>
@@ -75,6 +80,12 @@
   </div>
 
   <script>
+    // Load API key nếu đã lưu
+    window.onload = () => {
+      const saved = localStorage.getItem("gemini_key");
+      if(saved) document.getElementById("apiKey").value = saved;
+    };
+
     async function generate(type) {
       const apiKey = document.getElementById("apiKey").value.trim();
       const subject = document.getElementById("subject").value;
@@ -86,6 +97,7 @@
         alert("Vui lòng nhập API Key Gemini.");
         return;
       }
+      localStorage.setItem("gemini_key", apiKey);
 
       let taskName = "";
       if (type === "matrix") taskName = "Tạo ma trận đề";
@@ -176,7 +188,3 @@
       a.click();
 
       URL.revokeObjectURL(url);
-    }
-  </script>
-</body>
-</html>
