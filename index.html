@@ -4,65 +4,197 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tạo Đề Kiểm Tra Toán</title>
-<title>Tạo Đề Kiểm Tra</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-@@ -17,18 +17,22 @@
+  body { font-family: 'Inter', sans-serif; background-color: #1f2937; color: #facc15; }
+  .text-yellow-500 { color: #facc15; }
+  .bg-app { background-color: #ffffff; }
+  .bg-muted { background-color: #f9fafb; }
+  .ring-blue { --tw-ring-color: #93c5fd; }
+</style>
+</head>
 <body class="p-6 flex justify-center items-start min-h-screen">
-
 <div class="bg-app p-6 rounded-2xl shadow-xl max-w-4xl w-full">
   <div class="flex flex-col items-center mb-6">
     <img src="logo.jpg" alt="Logo Trường THCS Hàm Minh" class="w-24 h-24 mb-4 rounded-full shadow-lg">
     <h1 class="text-3xl font-semibold text-yellow-500 text-center">Trường THCS Hàm Minh</h1>
     <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán - Tin</h2>
     <p class="text-gray-500 text-center">Chương trình tạo đề kiểm tra định kì theo công văn 7791.</p>
+  </div>
 
-  <!-- Banner -->
-  <div class="bg-yellow-500 text-gray-900 p-6 rounded-xl mb-6 text-center shadow-lg">
-    <h1 class="text-3xl font-bold mb-2">Trường THCS Hàm Minh</h1>
-    <h2 class="text-2xl font-semibold mb-2">Tổ Toán - Tin</h2>
-    <p class="text-lg">Chương trình tạo đề kiểm tra định kì theo công văn 7791</p>
+  <!-- Cấu hình API -->
+  <div class="mb-6 bg-muted p-4 rounded-xl border border-gray-200 grid grid-cols-1 md:grid-cols-12 gap-4">
+    <div class="md:col-span-7">
+      <label class="block text-gray-700 mb-1">Gemini API Key</label>
+      <div class="flex gap-2">
+        <input id="apiKey" type="password" placeholder="Nhập API key" class="flex-1 px-4 py-2 border rounded-lg" />
+        <button id="toggleKey" class="px-3 py-2 border rounded-lg text-gray-700">Hiện</button>
+      </div>
+      <div class="mt-2 text-xs text-gray-500">
+        <input type="checkbox" id="rememberKey" class="rounded"/> Lưu API key trên trình duyệt
+      </div>
+    </div>
+    <div class="md:col-span-5">
+      <label class="block text-gray-700 mb-1">Model</label>
+      <select id="model" class="w-full px-4 py-2 border rounded-lg">
+        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp</option>
+        <option value="gemini-2.0-pro-exp">gemini-2.0-pro-exp</option>
+      </select>
+    </div>
   </div>
 
   <!-- Form nhập -->
   <form id="examForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="md:col-span-2">
-    <div>
       <label class="block text-gray-700 mb-1">Môn học</label>
       <input type="text" value="Toán" readonly class="w-full px-4 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"/>
-      <select id="subject" class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-900">
-        <option selected>Toán</option>
-        <option>Tin</option>
+    </div>
+    <div>
+      <label class="block text-gray-700 mb-1">Khối</label>
+      <select id="grade" class="w-full px-4 py-2 border rounded-lg">
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+        <option selected>9</option>
       </select>
     </div>
-
     <div>
-@@ -94,6 +98,7 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
+      <label class="block text-gray-700 mb-1">Kì kiểm tra</label>
+      <select id="topic" class="w-full px-4 py-2 border rounded-lg">
+        <option>Giữa kì 1</option>
+        <option>Cuối kì 1</option>
+        <option>Giữa kì 2</option>
+        <option selected>Cuối kì 2</option>
+      </select>
+    </div>
+    <div class="md:col-span-2">
+      <label class="block text-gray-700 mb-1">Ghi chú (tùy chọn)</label>
+      <textarea id="notes" rows="2" placeholder="Ví dụ: Đại số – hệ hai phương trình bậc nhất..." class="w-full px-4 py-2 border rounded-lg text-gray-800"></textarea>
+    </div>
+    <div class="md:col-span-2 flex gap-2 mt-2">
+      <button type="button" id="createMatrixButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo ma trận đề</button>
+      <button type="button" id="createTableButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo bảng đặc tả</button>
+      <button type="submit" id="generateButton" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Tạo Đề Kiểm Tra ✨</button>
+    </div>
+  </form>
+
+  <!-- Kết quả -->
+  <div id="statusContainer" class="mt-6 hidden">
+    <div id="loadingIndicator" class="flex justify-center items-center flex-col hidden">
+      <div class="animate-spin h-12 w-12 border-4 border-gray-400 border-t-blue-500 rounded-full"></div>
+      <p class="mt-2 text-gray-500">Đang tạo nội dung...</p>
+    </div>
+    <div id="examOutput" class="hidden mt-4">
+      <div class="flex gap-2 mb-2">
+        <button id="copyMarkdownButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Copy Markdown</button>
+        <button id="downloadMarkdownButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Download .md</button>
+      </div>
+      <textarea id="markdownContent" rows="10" class="w-full p-2 border rounded-lg mb-4" readonly></textarea>
+
+      <div class="flex gap-2 mb-2">
+        <button id="copyLatexButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Copy LaTeX</button>
+        <button id="downloadLatexButton" class="px-3 py-1 bg-gray-200 rounded-lg text-gray-700">Download .tex</button>
+      </div>
+      <textarea id="latexContent" rows="10" class="w-full p-2 border rounded-lg" readonly></textarea>
+    </div>
+    <div id="errorContainer" class="hidden text-red-700 bg-red-100 p-2 rounded-lg mt-2"></div>
+  </div>
+</div>
+
+<script>
+const apiKeyInput = document.getElementById('apiKey');
+const toggleKeyBtn = document.getElementById('toggleKey');
+const rememberKey = document.getElementById('rememberKey');
+const modelSelect = document.getElementById('model');
 const gradeSelect = document.getElementById('grade');
 const topicSelect = document.getElementById('topic');
 const notesInput = document.getElementById('notes');
-const subjectSelect = document.getElementById('subject');
+
+const generateButton = document.getElementById('generateButton');
+const createMatrixButton = document.getElementById('createMatrixButton');
+const createTableButton = document.getElementById('createTableButton');
+
 const statusContainer = document.getElementById('statusContainer');
 const loadingIndicator = document.getElementById('loadingIndicator');
 const examOutput = document.getElementById('examOutput');
-@@ -131,11 +136,12 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
+const markdownContent = document.getElementById('markdownContent');
+const latexContent = document.getElementById('latexContent');
+const errorContainer = document.getElementById('errorContainer');
+
+const copyMarkdownButton = document.getElementById('copyMarkdownButton');
+const copyLatexButton = document.getElementById('copyLatexButton');
+const downloadMarkdownButton = document.getElementById('downloadMarkdownButton');
+const downloadLatexButton = document.getElementById('downloadLatexButton');
+
+// ===== Functions =====
+toggleKeyBtn.addEventListener('click', ()=> {
+  apiKeyInput.type = apiKeyInput.type==='password'?'text':'password';
+  toggleKeyBtn.textContent = apiKeyInput.type==='password'?'Hiện':'Ẩn';
+});
+
+function showError(msg){
+  errorContainer.textContent = msg;
+  errorContainer.classList.remove('hidden');
+}
+
+function hideStates(){
+  loadingIndicator.classList.add('hidden');
+  examOutput.classList.add('hidden');
+  errorContainer.classList.add('hidden');
+  statusContainer.classList.add('hidden');
+}
+
+function setBusy(flag){
+  [generateButton, createMatrixButton, createTableButton].forEach(b=>b.disabled=flag);
+  if(flag){statusContainer.classList.remove('hidden'); loadingIndicator.classList.remove('hidden');}
+  else{loadingIndicator.classList.add('hidden');}
+}
+
 function buildPrompt(type){
   const grade = gradeSelect.value;
   const topic = topicSelect.value;
-  const subject = subjectSelect.value;
   const notes = notesInput.value.trim();
   const scopeNote = notes?`\nGiới hạn nội dung: ${notes}\n`:'';
   if(type==='matrix') return `Tạo ma trận đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
-  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
+  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
   return `Tạo đề kiểm tra môn Toán khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
-  if(type==='matrix') return `Tạo ma trận đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
-  if(type==='table') return `Tạo bảng đặc tả đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nChỉ trả lời Markdown rồi LaTeX.`;
-  return `Tạo đề kiểm tra môn ${subject} khối ${grade}, kì "${topic}".${scopeNote}\nMarkdown rồi LaTeX.`;
 }
 
 async function callGeminiAPI(prompt){
-@@ -172,7 +178,6 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
+  const key = apiKeyInput.value.trim();
+  if(!key) throw new Error('Thiếu API key.');
+  const model = modelSelect.value;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+  const payload = { contents:[{parts:[{text:prompt}]}] };
+  const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(!res.ok) throw new Error('API lỗi '+res.status);
+  const data = await res.json();
+  return data?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n')||'';
+}
+
+function extractBlocks(text){
+  const md = (text.match(/```markdown\n([\s\S]*?)```/i)||[])[1]||'';
+  const tex = (text.match(/```latex\n([\s\S]*?)```/i)||[])[1]||'';
+  return {md,tex};
+}
+
+async function handleGeneration(type){
+  hideStates();
+  setBusy(true);
+  try{
+    const prompt = buildPrompt(type);
+    const result = await callGeminiAPI(prompt);
+    const {md,tex} = extractBlocks(result);
+    markdownContent.value = md;
+    latexContent.value = tex;
+    statusContainer.classList.remove('hidden');
+    examOutput.classList.remove('hidden');
+  }catch(e){
+    showError(e.message||e);
+  }finally{
+    setBusy(false);
   }
 }
 
@@ -70,14 +202,12 @@ async function callGeminiAPI(prompt){
 async function copyToClipboard(text){
   try{await navigator.clipboard.writeText(text);}catch{
     const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
-@@ -191,8 +196,8 @@ <h2 class="text-2xl font-semibold text-yellow-500 text-center mb-2">Tổ Toán -
-copyMarkdownButton.addEventListener('click', ()=>copyToClipboard(markdownContent.value));
-copyLatexButton.addEventListener('click', ()=>copyToClipboard(latexContent.value));
+  }
+}
+function downloadFile(filename, content){
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
+}
 
-downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-toan-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
-downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-toan-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
-downloadMarkdownButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.md`, markdownContent.value));
-downloadLatexButton.addEventListener('click', ()=>downloadFile(`de-${subjectSelect.value}-${gradeSelect.value}-${topicSelect.value}.tex`, latexContent.value));
-</script>
-
-</body>
+createMatrixButton.addEventListener('click', ()=>handleGeneration('matrix'));
+createTableButton.addEventListener('click',
